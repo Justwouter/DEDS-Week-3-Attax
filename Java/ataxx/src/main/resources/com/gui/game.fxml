@@ -31,7 +31,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Button fx:id="StartGameButton" alignment="BOTTOM_CENTER" layoutX="157.0" layoutY="269.0" maxHeight="25.0" maxWidth="79.0" minHeight="25.0" minWidth="79.0" mnemonicParsing="false" onAction="#SetStartingPositions" prefHeight="25.0" prefWidth="79.0" text="Start Game!" />
+            <Button fx:id="ResetGameButton" alignment="BOTTOM_CENTER" layoutX="151.0" layoutY="254.0" maxHeight="25.0" maxWidth="90.0" minHeight="25.0" minWidth="79.0" mnemonicParsing="false" onAction="#ResetGame" prefHeight="25.0" prefWidth="90.0" text="Reset Game" />
          </children>
       </AnchorPane>
    </top>
