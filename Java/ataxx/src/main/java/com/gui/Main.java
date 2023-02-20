@@ -15,12 +15,12 @@ public class Main extends Application {
     private static Stage primaryStage;
 
     public static void main(String[] args) {
-        //launch(args);
-        Stack<Object> myStack = new Stack<>();
-        myStack.push("Hello");
-        myStack.push(1);
-        System.out.println(myStack.pop().getData());
-        System.out.println(myStack.pop().getData());
+        launch(args);
+        // Stack<Object> myStack = new Stack<>();
+        // myStack.push("Hello");
+        // myStack.push(1);
+        // System.out.println(myStack.pop().getData());
+        // System.out.println(myStack.pop().getData());
         
     }
 

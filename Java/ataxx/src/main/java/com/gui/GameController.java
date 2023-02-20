@@ -20,18 +20,38 @@ public class GameController extends AController implements Initializable{
     @FXML
     private GridPane GameBoard;
 
+    private AnchorPane Player1 = new AnchorPane();
+    private AnchorPane Player2 = new AnchorPane();
+    private Boolean PlayerTurn = true;
+
+    public GameController(){
+        Player1.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY)));
+        Player2.setBackground(new Background(new BackgroundFill(Color.BLUE, new CornerRadii(0), Insets.EMPTY)));
+
+
+    }
+
     public void SetStartingPositions() {
         GameBoard.getChildren().clear();
         for (int i = 0; i < GameBoard.getColumnCount(); i++) {
             for (int j = 0; j < GameBoard.getRowCount(); j++) {
 
                 AnchorPane AnchorThing = new AnchorPane();
-                AnchorThing.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY)));
-                AnchorThing.setOnMouseClicked(event -> AnchorThing.setBackground(new Background(new BackgroundFill(Color.BLACK, new CornerRadii(0), Insets.EMPTY))));
+                AnchorThing.setBackground(new Background(new BackgroundFill(Color.BLACK, new CornerRadii(0), Insets.EMPTY)));
+                AnchorThing.setOnMouseClicked(event -> {
+                    if(PlayerTurn){
+                        AnchorThing.setBackground(new Background(new BackgroundFill(Color.RED, new CornerRadii(0), Insets.EMPTY)));
+                    }
+                    else{
+                        AnchorThing.setBackground(new Background(new BackgroundFill(Color.BLUE, new CornerRadii(0), Insets.EMPTY)));
+                    };
+                    PlayerTurn = !PlayerTurn;
+                });
                 GameBoard.add(AnchorThing, i, j);
 
             }
         }
+        
     }
 
     public void ResetGame() throws IOException{
