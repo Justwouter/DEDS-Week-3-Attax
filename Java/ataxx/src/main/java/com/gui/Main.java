@@ -21,7 +21,7 @@ public class Main extends Application {
         myStack.push(1);
         System.out.println(myStack.pop().getData());
         System.out.println(myStack.pop().getData());
-
+        
     }
 
     @Override
