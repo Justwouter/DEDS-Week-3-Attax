@@ -3,13 +3,13 @@ package com.game;
 
 /***
  Custom implementation of the Stack data type.
- Contains the first item in the stack as {@code firstItem} and uses the methods {@code push, pop} to interact with the stack.
+ Contains the first item in the stack as {@code topItem} and uses the methods {@code push, pop} to interact with the stack.
 ***/
 public class Stack<T> {
-    private StackItem<T> firstItem;
+    private StackItem<T> topItem;
 
-    public StackItem<T> getFirstItem() {
-        return firstItem;
+    public StackItem<T> getTopItem() {
+        return topItem;
     }
 
     /***
@@ -17,7 +17,7 @@ public class Stack<T> {
      Throws {@code StackOverflowError} when the stack is empty.
      ***/
     public void push(T data){
-        firstItem = new StackItem<T>(data, firstItem);
+        topItem = new StackItem<T>(data, topItem);
     }
     
     /***
@@ -25,11 +25,11 @@ public class Stack<T> {
      Throws {@code StackOverflowError} when the stack is empty.
     ***/
     public StackItem<T> pop(){
-        if(firstItem == null){
+        if(topItem == null){
             throw new StackOverflowError("Stack Empty!");
         }
-        StackItem<T> tempitem = firstItem;
-        firstItem = firstItem.PreviousPointer;
+        StackItem<T> tempitem = topItem;
+        topItem = topItem.PreviousPointer;
         return tempitem;
     }
 

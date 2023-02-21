@@ -6,10 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+//import com.game.Stack;
 
 import java.io.IOException;
 
-import com.game.Stack;
 
 public class Main extends Application {
     private static Stage primaryStage;
@@ -24,6 +24,7 @@ public class Main extends Application {
         
     }
 
+    
     @Override
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
@@ -36,7 +37,7 @@ public class Main extends Application {
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
         BorderPane mainLayout = loader.load();
 
-        Scene scene = new Scene(mainLayout, 640, 480);
+        Scene scene = new Scene(mainLayout, 1280, 720);
         primaryStage.setScene(scene);
         String c = fxml.substring(0, 1).toUpperCase();
         String title = c + fxml.substring(1);

@@ -23,7 +23,7 @@ public class TestStack{
         testStack.push(one);
         testStack.push(two);
         
-        assertEquals(testStack.getFirstItem().getData(), two);
+        assertEquals(testStack.getTopItem().getData(), two);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class TestStack{
         testStack.push(one);
         testStack.push(two);
         
-        assertEquals(testStack.getFirstItem().getData(), two);
+        assertEquals(testStack.getTopItem().getData(), two);
     }
 
     @Test
