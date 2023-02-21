@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -44,13 +45,16 @@ public class GameController extends AController implements Initializable{
     
 
     public void SetupGameBoard(){
+        System.out.println(GameBoard.getChildren());
         clearBoard();
         int boardsize = 7;
         
         for(int x =0;x<=boardsize;x++){
             for(int y =0;y<=boardsize;y++){
-                GameBoard.add(getPlayCircle(), y, x);
-            
+                Circle myNewCircle = getPlayCircle();
+                GameBoard.add(myNewCircle, y, x);
+                GridPane.setHalignment(myNewCircle, HPos.CENTER);
+
             } 
         }
 
