@@ -1,12 +1,14 @@
-package com.basegame;
+package com.basegame.Players;
 
+import com.basegame.Board;
+import com.basegame.ScannerV3;
 import com.basegame.interfaces.IPiece;
 import com.basegame.interfaces.IPlayer;
 import com.basegame.interfaces.IPrinter;
 import com.basegame.interfaces.IScanner;
 
-//TODO Implement screen cleaning after bad input.
-//TODO Unit takeover & check voor queen style move & disallow knight style move.
+//TODO Implement screen cleaning after bad input. Maybe possibly 
+//TODO Win conditions
 public class HumanPlayer implements IPlayer {
     IScanner scanner = new ScannerV3();
     IPiece character;
@@ -24,42 +26,39 @@ public class HumanPlayer implements IPlayer {
 
         printer.println("Your character is: " + character.getChar());
         printer.println("Select your piece with the format \"Xaxis number,Yaxis number\": ");
-        this.from = handleCordsInput(0, gameBoard);
+        this.from = handleCordsInput(gameBoard);
 
         gameBoard.drawBoard();
 
         printer.println("Your character is: " + character.getChar());
         printer.println("Select your target with the format \"Xaxis number,Yaxis number\": ");
-        int[] to = handleCordsInput(0, gameBoard);
+        int[] to = handleCordsInput(gameBoard);
 
         gameBoard.movePiece(this, from[0], from[1], to[0], to[1]);
     }
 
-    protected int[] handleCordsInput(int depth, Board gameBoard) {
-        if (depth <= 5) {
-            String input = scanner.nextLine();
-            String[] numbers = input.split(",");
-            if (numbers.length == 2) {
-                try {
-                    int Xaxis = Integer.parseInt(numbers[0].trim());
-                    int Yaxis = Integer.parseInt(numbers[1].trim());
+    protected int[] handleCordsInput(Board gameBoard) {
+        
+        String input = scanner.nextLine();
+        String[] numbers = input.split(",");
+        if (numbers.length == 2) {
+            try {
+                int Xaxis = Integer.parseInt(numbers[0].trim());
+                int Yaxis = Integer.parseInt(numbers[1].trim());
 
-                    if (!playerMoveValid(Xaxis, Yaxis, gameBoard)) {
-                        System.out.println("Please make a valid move");
-                        return handleCordsInput(depth + 1, gameBoard);
+                if (!playerMoveValid(Xaxis, Yaxis, gameBoard)) {
+                    System.out.println("Please make a valid move");
+                    return handleCordsInput(gameBoard);
 
-                    }
+                }
 
-                    return new int[] { Xaxis, Yaxis };
+                return new int[] { Xaxis, Yaxis };
 
 
-                } catch (NumberFormatException e) {}
-            }
-            System.out.println("Please use a valid format");
-            return handleCordsInput(depth + 1, gameBoard);
+            } catch (NumberFormatException e) {}
         }
-        return null;
-
+        System.out.println("Please use a valid format");
+        return handleCordsInput(gameBoard);
     }
 
     protected boolean playerMoveValid(int x, int y, Board gameBoard) {
@@ -75,7 +74,8 @@ public class HumanPlayer implements IPlayer {
     }
 
     protected boolean moveWithinRadius(int x, int y){
-        return ((Math.abs(from[0] - x) <= 2) && (Math.abs(from[1] - y) <= 2));
+
+        return Math.abs(from[0] - x) <= 2 && (Math.abs(from[1] - y) ) <=2;
     }
 
     @Override

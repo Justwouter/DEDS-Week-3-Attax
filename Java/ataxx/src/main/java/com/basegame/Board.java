@@ -35,7 +35,7 @@ public class Board {
     }
 
     public void fillStartingCorners(IPlayer player1, IPlayer player2){
-        for(int i =5;i<=6;i++){
+        for(int i = BoardPieces.length-2;i<=BoardPieces.length-1;i++){
             for(int j=0;j<=1;j++){
                 BoardPieces[i][j] = player1.getChar();
                 BoardPieces[j][i] = player2.getChar();
@@ -103,12 +103,26 @@ public class Board {
                 jumper = true;
             }
             movementStack.push(new Move(player, x1, y1, x2, y2, jumper));
+            convertAdjecentPieces(player, x2, y2);
             return true;
         }
         return false;
     }
 
+    public void convertAdjecentPieces(IPlayer player, int x, int y){
+        for(int i = x-1;i<=x+1;i++){
+            if(i >-1 && i < getBoardXSize()){
+                for(int j = y-1;j<=y+1;j++){
+                    if(j > -1 && j < getBoardYSize())
+                    if(BoardPieces[j][i] != defaultPiece){
+                        BoardPieces[j][i] = player.getChar();
+                    }
+                }
 
+            }
+            
+        }
+    }
 
     public boolean isCordWithinBoard(int x, int y) {
         return !(x < 0 | x > getBoardXSize() | y < 0 | y > getBoardYSize());
@@ -127,8 +141,41 @@ public class Board {
         return BoardPieces[y-1][x-1];
     }
 
+    public boolean isPieceOnBoard(IPiece piece){
+        for (int i = 0; i < BoardPieces.length; i++) {
+            for (int j = 0; j < BoardPieces[i].length; j++) {
+                if(BoardPieces[i][j] == piece){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
+    public boolean validMovesLeft(IPlayer player){
+        //Loop trough board
+        for (int i = 0; i < BoardPieces.length; i++) {
+            for (int j = 0; j < BoardPieces[i].length; j++) {
+                if(BoardPieces[i][j] == player.getChar()){
+                    
+                    //Loop trough positions arround found piece
+                    for (int x = i-2; x < i+2; x++) {
+                        for (int y = j-2; y < j+2; y++) {
+                                if(x < BoardPieces.length && y < BoardPieces[0].length){
+                                    if(isCordWithinBoard(x, y) && BoardPieces[x][y] == defaultPiece){
+                                        return true;
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    // public int[][] validMovesFromPosition(){
 
+    // }
 
 
     public int getBoardXSize() {
