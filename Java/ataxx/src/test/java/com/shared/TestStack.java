@@ -46,7 +46,6 @@ public class TestStack{
         }
 
         for(int i = amount;i>0;i--){
-            System.out.println(i);
             assertEquals(testStack.pop().getData(), i);
         }
     }

@@ -8,6 +8,11 @@ module com.ataxx {
 
     opens com.gui to javafx.fxml;
     opens com.shared;
+    opens com.basegame;
+    opens com.basegame.interfaces;
     exports com.gui;
     exports com.shared;
+    exports com.basegame;
+    exports com.basegame.interfaces;
+
 }

@@ -45,7 +45,6 @@ public class GameController extends AController implements Initializable{
     
 
     public void SetupGameBoard(){
-        System.out.println(GameBoard.getChildren());
         clearBoard();
         int boardsize = 7;
         

@@ -53,11 +53,6 @@ public class Board {
         drawScoreBoard(player1, player2);
     }
     private void drawMainBoard(){
-        // Legend Top
-        for (int j = 0; j <= BoardPieces.length; j++) {
-            printer.print(j + " ");
-        }
-        printer.println();
 
         // Actual board & Side legend
         for (int i = 0; i < BoardPieces.length; i++) {
@@ -67,6 +62,11 @@ public class Board {
             }
             printer.println();
         }
+        // Legend Bottom
+        for (int j = 0; j <= BoardPieces.length; j++) {
+            printer.print(j + " ");
+        }
+        printer.println();
     } 
     public void drawScoreBoard(IPlayer player1, IPlayer player2){
         printer.println("Score: "+player1.getChar().getChar()+" = "+getScore(player1)+" - "+player2.getChar().getChar()+" = "+getScore(player2));
@@ -111,7 +111,7 @@ public class Board {
 
 
     public boolean isCordWithinBoard(int x, int y) {
-        return !(x <= -1 | x > getBoardXSize()-1 | y <= -1 | y > getBoardYSize()-1);
+        return !(x < 0 | x > getBoardXSize() | y < 0 | y > getBoardYSize());
     }
 
     protected boolean checkClone(int x1, int y1, int x2, int y2) {
