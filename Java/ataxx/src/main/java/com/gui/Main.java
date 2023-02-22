@@ -16,12 +16,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        // Stack<Object> myStack = new Stack<>();
-        // myStack.push("Hello");
-        // myStack.push(1);
-        // System.out.println(myStack.pop().getData());
-        // System.out.println(myStack.pop().getData());
-        
     }
 
     

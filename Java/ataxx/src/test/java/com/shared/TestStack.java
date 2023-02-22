@@ -1,4 +1,4 @@
-package com.game;
+package com.shared;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class TestStack{
+    //TODO Better test plan
     static Stack<Object> testStack = new Stack<>();
 
     @BeforeAll

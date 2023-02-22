@@ -7,7 +7,7 @@ module com.ataxx {
     requires transitive com.google.gson;
 
     opens com.gui to javafx.fxml;
-    opens com.game;
+    opens com.shared;
     exports com.gui;
-    exports com.game;
+    exports com.shared;
 }

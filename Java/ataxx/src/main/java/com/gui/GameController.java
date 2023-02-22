@@ -49,8 +49,8 @@ public class GameController extends AController implements Initializable{
         clearBoard();
         int boardsize = 7;
         
-        for(int x =0;x<=boardsize;x++){
-            for(int y =0;y<=boardsize;y++){
+        for(int x =0;x<=boardsize-1;x++){
+            for(int y =0;y<=boardsize-1;y++){
                 Circle myNewCircle = getPlayCircle();
                 GameBoard.add(myNewCircle, y, x);
                 GridPane.setHalignment(myNewCircle, HPos.CENTER);
