@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.shared.Cord;
+import com.shared.GenericMove;
+import com.shared.Stack;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 
-
+//TODO Win conditions, AI stuff, Undo
 public class GameController extends AController implements Initializable{
 
     @FXML
@@ -23,6 +25,7 @@ public class GameController extends AController implements Initializable{
     private Boolean PlayerTurn = true;
 
     public Button[][] Board;
+    public Stack<GenericMove<String>> movementStack = new Stack<>();
 
     public final int boardsize = 7;
     public final Circle buttonShape = new Circle(89,101,20);
@@ -92,6 +95,7 @@ public class GameController extends AController implements Initializable{
             }
             CloseMoveMenu();
             infectButtons(button);
+            movementStack.push(new GenericMove<String>(findButtonIndex(fromButton), findButtonIndex(button), button.getStyle()));
         }
         else{
             if(moveMenuOpen){
