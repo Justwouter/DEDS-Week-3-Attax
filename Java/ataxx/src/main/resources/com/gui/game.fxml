@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.GameController">
@@ -33,16 +32,14 @@
                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="65.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Circle fx:id="RedBall" fill="#e50b1a" layoutX="89.0" layoutY="155.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="BlueBall" fill="DODGERBLUE" layoutX="89.0" layoutY="204.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" />
          </children>
       </AnchorPane>
    </top>
-   <center>
-      <Button fx:id="ResetGameButton" alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ResetGame" prefHeight="40.0" prefWidth="173.0" text="Reset Game" textAlignment="CENTER" BorderPane.alignment="CENTER">
+   <bottom>
+      <Button fx:id="ResetGameButton1" alignment="BOTTOM_CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#ResetGame" prefHeight="40.0" prefWidth="173.0" text="Reset Game" textAlignment="CENTER" BorderPane.alignment="CENTER">
          <font>
             <Font size="22.0" />
          </font>
       </Button>
-   </center>
+   </bottom>
 </BorderPane>

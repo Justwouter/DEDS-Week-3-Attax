@@ -90,7 +90,7 @@ public class Board {
     
 
     public boolean movePiece(Move move) {
-
+        System.out.println("Movepiece: "+(move.fromX+1)+","+(move.fromY+1) + "->"+(move.toX+1)+","+(move.toY+1));
         if(isCordWithinBoard(move.fromY, move.fromX) && isCordWithinBoard(move.toY, move.toX) && this.BoardPieces[move.toY][move.toX] != move.player.getChar()){
             this.BoardPieces[move.toY][move.toX] = move.player.getChar();
             if(!checkClone(move) && checkJump(move)){

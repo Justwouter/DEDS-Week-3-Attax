@@ -3,10 +3,10 @@ package com.basegame.Players;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.basegame.Board;
-import com.basegame.Cord;
 import com.basegame.Move;
 import com.basegame.interfaces.IPiece;
 import com.basegame.interfaces.IPlayer;
+import com.shared.Cord;
 import com.shared.Stack;
 
 public class RandomBotPlayer implements IPlayer{
@@ -46,13 +46,13 @@ public class RandomBotPlayer implements IPlayer{
                 
             }
         }
+
         return totalMovesStack;
     }
 
     protected Move pickRandomMove(Stack<Move> possibleMoves){
         return possibleMoves.getIndex(ThreadLocalRandom.current().nextInt(0, possibleMoves.length()));
     }
-
 
 
     @Override

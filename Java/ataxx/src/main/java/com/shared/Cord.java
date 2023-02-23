@@ -1,4 +1,4 @@
-package com.basegame;
+package com.shared;
 
 public class Cord {
     int x;
