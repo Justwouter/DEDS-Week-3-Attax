@@ -1,5 +1,6 @@
 package com.basegame;
 
+import com.basegame.Players.RandomBotPlayer;
 // import com.basegame.interfaces.IBoard;
 import com.basegame.interfaces.IPiece;
 import com.basegame.interfaces.IPlayer;
@@ -72,9 +73,7 @@ public class Board {
         printer.println("Score: "+player1.getChar().getChar()+" = "+getScore(player1)+" - "+player2.getChar().getChar()+" = "+getScore(player2));
     }
 
-    
-    
-    
+
     public int getScore(IPlayer player){
         int counter = 0;
         for (int i = 0; i < BoardPieces.length; i++) {
@@ -90,10 +89,6 @@ public class Board {
     
 
     public boolean movePiece(IPlayer player, int x1, int y1, int x2, int y2) {
-        x1 = x1-1;
-        y1 = y1-1;
-        x2= x2-1;
-        y2=y2-1;
         if (isCordWithinBoard(x1, x1) && isCordWithinBoard(x2, y2)) {
             this.BoardPieces[y2][x2] = player.getChar();
             boolean jumper = false;
@@ -109,7 +104,7 @@ public class Board {
         return false;
     }
 
-    public void convertAdjecentPieces(IPlayer player, int x, int y){
+    protected void convertAdjecentPieces(IPlayer player, int x, int y){
         for(int i = x-1;i<=x+1;i++){
             if(i >-1 && i < getBoardXSize()){
                 for(int j = y-1;j<=y+1;j++){
@@ -137,8 +132,8 @@ public class Board {
     }
 
     public IPiece getCords(int x, int y) {
-        printer.println(BoardPieces[y-1][x-1].getChar());
-        return BoardPieces[y-1][x-1];
+        printer.println(BoardPieces[y][x].getChar());
+        return BoardPieces[y][x];
     }
 
     public boolean isPieceOnBoard(IPiece piece){
@@ -173,15 +168,32 @@ public class Board {
         }
         return false;
     }
-    // public int[][] validMovesFromPosition(){
+    
+    public Stack<Move> validMovesForPiece(int i, int j){
+        Stack<Move> StackMoves = new Stack<>();
 
-    // }
+        for (int x = i-2; x < i+2; x++) {
+            for (int y = j-2; y < j+2; y++) {
+                    if(x < BoardPieces.length && y < BoardPieces[0].length){
+                        if(isCordWithinBoard(x, y) && BoardPieces[x][y] == defaultPiece){
+                            StackMoves.push(new Move(new RandomBotPlayer(), i, j, x, y, false));
+                            //System.out.println("From: "+i+","+j+" To: "+"X: "+x+" Y: "+y +" true"); //DEBUG
+                        }
+                        else{
+                            //System.out.println("From: "+i+","+j+" To: "+"X: "+x+" Y: "+y +" false"); //DEBUG
+
+                        }
+
+                    }
+            }
+        }
+        return StackMoves;
+    }
 
 
     public int getBoardXSize() {
         return BoardPieces[0].length;
     }
-
     public int getBoardYSize() {
         return BoardPieces.length;
     }

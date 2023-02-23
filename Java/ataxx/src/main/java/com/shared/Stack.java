@@ -13,9 +13,8 @@ public class Stack<T> {
     }
 
     /***
-     Removes first item from the stack and returns it to the caller.
-     Throws {@code StackOverflowError} when the stack is empty.
-     ***/
+        Adds a new item on top of the stack
+    ***/
     public void push(T data){
         topItem = new StackItem<T>(data, topItem);
     }
@@ -31,6 +30,34 @@ public class Stack<T> {
         StackItem<T> tempitem = topItem;
         topItem = topItem.PreviousPointer;
         return tempitem;
+    }
+
+    public int length(){
+        int counter = 0;
+        StackItem<T> stackItem = topItem;
+
+        while (true){
+            if(stackItem != null){
+                counter++;
+                stackItem = stackItem.getPreviousPointer();
+            }
+            else{
+                break;
+            }
+        }
+        return counter;
+    }
+
+    public T getIndex(int index){
+        StackItem<T> stackItem = topItem;
+
+        for(int i = 0; i<=index;i++){
+            if(i == index){
+                return stackItem.Data;
+            }
+            stackItem = stackItem.getPreviousPointer();
+        }
+        return null;
     }
 
     /***

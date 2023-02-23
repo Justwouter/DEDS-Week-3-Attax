@@ -1,5 +1,7 @@
 package com.basegame;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class BaseGameStarter {
 
     public static void StartNewTerminalGame() {
@@ -9,9 +11,11 @@ public class BaseGameStarter {
         // System.out.println(myStack.pop().getData());
         // System.out.println(myStack.pop().getData());
         new Game();
+        new Game();
     }
 
     public static void main(String[] args) {
+      
         Helpers.enableUTF8InPowershell();
         StartNewTerminalGame();
     }

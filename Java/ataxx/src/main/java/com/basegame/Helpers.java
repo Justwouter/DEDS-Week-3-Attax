@@ -25,4 +25,19 @@ public final class Helpers {
         
     }
 
+    public static void sleep(int value, boolean seconds){
+        if(seconds){
+            try{
+                Thread.sleep(value*1000);
+            }
+            catch( Exception e){}
+        }
+        else{
+            try{
+                Thread.sleep(value);
+            }
+            catch( Exception e){}
+        }
+    }
+
 }

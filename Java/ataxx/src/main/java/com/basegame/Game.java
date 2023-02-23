@@ -1,32 +1,61 @@
 package com.basegame;
 
 import com.basegame.Players.HumanPlayer;
+import com.basegame.Players.RandomBotPlayer;
+import com.basegame.interfaces.IPiece;
 // import com.basegame.interfaces.IBoard;
 import com.basegame.interfaces.IPlayer;
+import com.basegame.interfaces.IPrinter;
+import com.basegame.interfaces.IScanner;
 
 public class Game {
+    private final long TotalMovesInGame = 9223372036854775807L;
     public Board GameBoard;
     public IPlayer Player1;
     public IPlayer Player2;
     public IPlayer lastPlayer;
+    IScanner scanner = new ScannerV3();
+    IPrinter printer = new AtaxxPrinter();
+
 
     public Game() {
 
         this.GameBoard = new Board(7);
-        this.Player1 = new HumanPlayer(new AtaxxPiece('\u27D0'));
-        this.Player2 = new HumanPlayer(new AtaxxPiece('\u25EF'));
+        this.Player1 = choosePlayer(1, new AtaxxPiece('\u27D0'));
+        this.Player2 = choosePlayer(2, new AtaxxPiece('\u25EF'));
         startGame();
+    }
+
+    public IPlayer choosePlayer(int playernumber, IPiece character){
+        printer.println("Who plays as player "+playernumber+" With character " + character.getChar()+"?");
+        printer.println("1: Human Player \n2: Random Bot");
+        switch(scanner.nextInt()){
+            case 1:
+                return new HumanPlayer(character);
+
+            case 2:
+                return new RandomBotPlayer(character);
+
+            default:
+                Helpers.clearScreen();
+                printer.println("Please choose a valid option!");
+                return choosePlayer(playernumber, character);
+        }
     }
 
     public void startGame() {
         GameBoard.fillStartingCorners(Player1, Player2);
-        while (true) {
-            if(isGameDone(Player1)){break;}
+
+        for(long i = 0; i<TotalMovesInGame;i++) {
+            if(isGameDone(Player1)){handleWinner(false);return;}
             GameLoop(Player1);
-            if(isGameDone(Player2)){break;}
+            //Helpers.sleep(2, true);
+            if(isGameDone(Player2)){handleWinner(false);return;}
             GameLoop(Player2);
+            //Helpers.sleep(2, true);
         }
-        handleWinner();
+        handleWinner(true);
+        
         
     }
     public void GameLoop(IPlayer player){
@@ -36,11 +65,18 @@ public class Game {
 
     }
 
-    public void handleWinner(){
-        if(lastPlayer != null)
-            GameBoard.printer.print("Player " +lastPlayer.getChar().getChar()+" is the winner!");
-        else
-            GameBoard.printer.print("Player " +Player1.getChar().getChar()+" and Player " + Player2.getChar().getChar()+" have drawn!");
+    public void handleWinner(boolean timeup){
+        if(timeup){
+            printer.println("Player " +Player1.getChar().getChar()+" and Player " + Player2.getChar().getChar()+" took longer than "+TotalMovesInGame+" moves!");
+
+        }
+        else{
+            if(lastPlayer != null)
+                printer.println("Player " +lastPlayer.getChar().getChar()+" is the winner!");
+            else
+                printer.println("Player " +Player1.getChar().getChar()+" and Player " + Player2.getChar().getChar()+" have drawn!");
+        
+        }
         
     }
 

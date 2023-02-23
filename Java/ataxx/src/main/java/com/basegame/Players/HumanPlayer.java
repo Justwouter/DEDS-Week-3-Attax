@@ -8,7 +8,7 @@ import com.basegame.interfaces.IPrinter;
 import com.basegame.interfaces.IScanner;
 
 //TODO Implement screen cleaning after bad input. Maybe possibly 
-//TODO Win conditions
+//TODO Move move validation to board instead of individual users
 public class HumanPlayer implements IPlayer {
     IScanner scanner = new ScannerV3();
     IPiece character;
@@ -43,8 +43,9 @@ public class HumanPlayer implements IPlayer {
         String[] numbers = input.split(",");
         if (numbers.length == 2) {
             try {
-                int Xaxis = Integer.parseInt(numbers[0].trim());
-                int Yaxis = Integer.parseInt(numbers[1].trim());
+                int Xaxis = Integer.parseInt(numbers[0].trim())-1;
+                int Yaxis = Integer.parseInt(numbers[1].trim())-1;
+                System.out.println("Out:"+Xaxis + ","+Yaxis);
 
                 if (!playerMoveValid(Xaxis, Yaxis, gameBoard)) {
                     System.out.println("Please make a valid move");
