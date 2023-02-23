@@ -1,6 +1,7 @@
 package com.basegame.Players;
 
 import com.basegame.Board;
+import com.basegame.Move;
 import com.basegame.ScannerV3;
 import com.basegame.interfaces.IPiece;
 import com.basegame.interfaces.IPlayer;
@@ -34,7 +35,7 @@ public class HumanPlayer implements IPlayer {
         printer.println("Select your target with the format \"Xaxis number,Yaxis number\": ");
         int[] to = handleCordsInput(gameBoard);
 
-        gameBoard.movePiece(this, from[0], from[1], to[0], to[1]);
+        gameBoard.movePiece(new Move(this, from[0], from[1], to[0], to[1]));
     }
 
     protected int[] handleCordsInput(Board gameBoard) {
@@ -47,7 +48,7 @@ public class HumanPlayer implements IPlayer {
                 int Yaxis = Integer.parseInt(numbers[1].trim())-1;
                 System.out.println("Out:"+Xaxis + ","+Yaxis);
 
-                if (!playerMoveValid(Xaxis, Yaxis, gameBoard)) {
+                if (!playerMoveValid(Yaxis, Xaxis, gameBoard)) {
                     System.out.println("Please make a valid move");
                     return handleCordsInput(gameBoard);
 
@@ -62,20 +63,18 @@ public class HumanPlayer implements IPlayer {
         return handleCordsInput(gameBoard);
     }
 
-    protected boolean playerMoveValid(int x, int y, Board gameBoard) {
-        if(gameBoard.isCordWithinBoard(x, y)){
-            if(from != null && moveWithinRadius(x,y)){
-                return gameBoard.getCords(x, y) == gameBoard.defaultPiece;
+    protected boolean playerMoveValid(int vertical, int horizontal, Board gameBoard) {
+        if(gameBoard.isCordWithinBoard(vertical, horizontal)){
+            if(from != null && moveWithinRadius(vertical,horizontal)){
+                return gameBoard.getCords(vertical, horizontal) == gameBoard.defaultPiece;
             }
-            return gameBoard.getCords(x, y) == this.character;
+            return gameBoard.getCords(vertical, horizontal) == this.character;
         }
         
         return false;
-
     }
 
-    protected boolean moveWithinRadius(int x, int y){
-
+    protected boolean moveWithinRadius(int y, int x){
         return Math.abs(from[0] - x) <= 2 && (Math.abs(from[1] - y) ) <=2;
     }
 

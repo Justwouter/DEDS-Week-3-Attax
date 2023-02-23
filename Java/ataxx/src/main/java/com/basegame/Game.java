@@ -49,10 +49,10 @@ public class Game {
         for(long i = 0; i<TotalMovesInGame;i++) {
             if(isGameDone(Player1)){handleWinner(false);return;}
             GameLoop(Player1);
-            //Helpers.sleep(2, true);
+            Helpers.sleep(2, true); //DEBUG
             if(isGameDone(Player2)){handleWinner(false);return;}
             GameLoop(Player2);
-            //Helpers.sleep(2, true);
+            Helpers.sleep(2, true); //DEBUG
         }
         handleWinner(true);
         

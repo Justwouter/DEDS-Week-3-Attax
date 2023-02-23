@@ -11,7 +11,6 @@ import com.shared.Stack;
 
 public class RandomBotPlayer implements IPlayer{
     IPiece character;
-    int[] from;
 
     public RandomBotPlayer(){}
     public RandomBotPlayer(IPiece character){
@@ -21,8 +20,8 @@ public class RandomBotPlayer implements IPlayer{
     @Override
     public void playTurn(Board gameBoard) {
         Move myMove = pickRandomMove(FindMoves(gameBoard, findPieces(gameBoard)));
-        gameBoard.movePiece(this, myMove.fromX, myMove.fromY,myMove.toX , myMove.toY);
-        gameBoard.printer.println("Player "+character.getChar() + ": "+(myMove.fromX)+","+(myMove.fromY)+" - "+(myMove.toX)+","+(myMove.toY));
+        gameBoard.movePiece(new Move(this, myMove.fromX, myMove.fromY, myMove.toX , myMove.toY));
+        gameBoard.printer.println("Player "+character.getChar() + ": "+(myMove.fromX+1)+","+(myMove.fromY+1)+" -> "+(myMove.toX+1)+","+(myMove.toY+1));
     }
 
     protected Stack<Cord> findPieces(Board gameBoard){
@@ -34,7 +33,6 @@ public class RandomBotPlayer implements IPlayer{
                 }
             }
         }
-        System.out.println(cordStack.length());//DEBUG
         return cordStack;
     }
 
@@ -45,15 +43,17 @@ public class RandomBotPlayer implements IPlayer{
             Stack<Move> tempStack =  gameBoard.validMovesForPiece(cords.getY(), cords.getX());
             for(int j = 0; j < tempStack.length();j++){
                 totalMovesStack.push(tempStack.getIndex(j));
+                
             }
         }
-        System.out.println(totalMovesStack.length()); //DEBUG
         return totalMovesStack;
     }
 
     protected Move pickRandomMove(Stack<Move> possibleMoves){
         return possibleMoves.getIndex(ThreadLocalRandom.current().nextInt(0, possibleMoves.length()));
     }
+
+
 
     @Override
     public IPiece getChar() {

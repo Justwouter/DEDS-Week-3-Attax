@@ -56,7 +56,6 @@ public class GameController extends AController implements Initializable{
 
             } 
         }
-
         // GameBoard.setOnMouseClicked(event ->{
         //     System.out.println(event.getX()+" : "+event.getY());
         //     Node intersect = event.getPickResult().getIntersectedNode();

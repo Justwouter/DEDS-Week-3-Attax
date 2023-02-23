@@ -49,4 +49,14 @@ public class TestStack{
             assertEquals(testStack.pop().getData(), i);
         }
     }
+
+    @Test
+    public void testStackLengthBig(){
+        int amount = 1000;
+        for(int i =0;i<amount;i++){
+            testStack.push(i);
+        }
+        assertEquals(amount, testStack.length());
+
+    }
 }

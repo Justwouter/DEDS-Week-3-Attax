@@ -1,7 +1,5 @@
 package com.basegame;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 public class BaseGameStarter {
 
     public static void StartNewTerminalGame() {
