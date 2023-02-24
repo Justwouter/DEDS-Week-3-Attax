@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.gui.Bot.AggressiveBot;
 import com.gui.Bot.RandomBot;
 import com.shared.BoardState;
 import com.shared.Cord;
@@ -147,7 +148,7 @@ public class GameController extends AController implements Initializable{
 
     //Bot specific
     public void doBotMove(){
-        RandomBot ai = new RandomBot();
+        AggressiveBot ai = new AggressiveBot(this);
         ai.pickRandomFrom(Board, player2Color);
         OpenMoveMenu(Board[ai.from.getY()][ai.from.getX()], null);
         ai.pickRandomTo(Board, CloneRadius, JumpRadius);
@@ -169,7 +170,7 @@ public class GameController extends AController implements Initializable{
         return null;
     }
 
-    private void ColorButtonsOuter(Cord index){
+    public void ColorButtonsOuter(Cord index){
         for(int vertical = index.getY()-2;vertical<=index.getY()+2;vertical++){
             for(int horizontal = index.getX()-2;horizontal<=index.getX()+2;horizontal++){
                 if(isIndexInBoard(vertical,horizontal)){
@@ -184,7 +185,7 @@ public class GameController extends AController implements Initializable{
         }
 
     }
-    private void ColorButtonsInner(Cord index){
+    public void ColorButtonsInner(Cord index){
         for(int vertical = index.getY()-1;vertical<=index.getY()+1;vertical++){
             for(int horizontal = index.getX()-1;horizontal<=index.getX()+1;horizontal++){
                 if(isIndexInBoard(vertical,horizontal)){
@@ -199,7 +200,7 @@ public class GameController extends AController implements Initializable{
         }
 
     }
-    private void CloseMoveMenu(){
+    public void CloseMoveMenu(){
 
         for(int vertical = 0;vertical < boardsize;vertical++){
             for(int horizontal = 0;horizontal<  boardsize;horizontal++){
@@ -254,6 +255,22 @@ public class GameController extends AController implements Initializable{
         }
         return convertStack;
     }
+
+    public int infectButtonsAmount(Button button){
+        Cord index = findButtonIndex(button);
+        Stack<Cord> convertStack = new Stack<>();
+        for(int vertical = index.getY()-1;vertical<=index.getY()+1;vertical++){
+            for(int horizontal = index.getX()-1;horizontal<=index.getX()+1;horizontal++){
+                if(horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0){
+                    if(Board[horizontal][vertical].isVisible() && !isButtonInMoveMenu(Board[horizontal][vertical])){
+                        convertStack.push(new Cord(horizontal, vertical));
+                    }
+                }
+            }
+        }
+        return convertStack.length();
+    }
+
 
     public boolean isPlayerTurn(Button button){
         if(PlayerTurn){
