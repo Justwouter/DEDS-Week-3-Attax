@@ -103,8 +103,8 @@ public class GameController extends AController implements Initializable{
                     buttonClone(fromButton, button);
                 }
                 CloseMoveMenu();
-                movementStack.push(generateBoardState());
                 infectButtons(button);
+                movementStack.push(generateBoardState());
                 switchPlayer();
                 checkPlayerWin();
             }
