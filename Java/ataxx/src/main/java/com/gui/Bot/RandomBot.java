@@ -1,8 +1,5 @@
 package com.gui.Bot;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import com.basegame.Board;
 import com.shared.Cord;
 import com.shared.Stack;
 
@@ -36,7 +33,6 @@ public class RandomBot {
         }
         this.to =  possibleMoves.getIndex(getRandomNumber(0, possibleMoves.length())); //ToFix This errors when the stack is empty and returns null
     }
-    }   
 
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
