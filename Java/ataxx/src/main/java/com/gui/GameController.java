@@ -148,7 +148,7 @@ public class GameController extends AController implements Initializable{
 
     //Bot specific
     public void doBotMove(){
-        AggressiveBot ai = new AggressiveBot(this);
+        RandomBot ai = new RandomBot(this);
         ai.pickRandomFrom(Board, player2Color);
         OpenMoveMenu(Board[ai.from.getY()][ai.from.getX()], null);
         ai.pickRandomTo(Board, CloneRadius, JumpRadius);
@@ -215,10 +215,10 @@ public class GameController extends AController implements Initializable{
         }
     }
 
-    private boolean isIndexInBoard(int vertical, int horizontal){
+    public boolean isIndexInBoard(int vertical, int horizontal){
         return horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0;
     }
-    private boolean isButtonInMoveMenu(Button button){
+    public boolean isButtonInMoveMenu(Button button){
         return button.getStyle() == JumpRadius || button.getStyle() == CloneRadius;
     }
     private boolean isJumpButton(Button button){
@@ -391,7 +391,7 @@ public class GameController extends AController implements Initializable{
     
     //Non game buttons
     public void ResetGame() throws IOException{
-        Main.show("game","",false);
+        Main.show("game","",player2IsBot);
     }
 
     

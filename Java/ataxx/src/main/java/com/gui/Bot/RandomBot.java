@@ -1,5 +1,6 @@
 package com.gui.Bot;
 
+import com.gui.GameController;
 import com.shared.Cord;
 import com.shared.Stack;
 
@@ -8,7 +9,14 @@ import javafx.scene.control.Button;
 public class RandomBot {
     public Cord from;
     public Cord to;
+    
+    public GameController controller;
 
+    public RandomBot(GameController controller){
+        this.controller = controller;
+    }
+
+    
     public void pickRandomFrom(Button[][] board, String identifier){
         Stack<Cord> possibleStarts = new Stack<>();
         for(int y =0;y<board.length;y++){

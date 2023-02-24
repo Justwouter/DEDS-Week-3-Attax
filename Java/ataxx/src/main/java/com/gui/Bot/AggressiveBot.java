@@ -15,42 +15,53 @@ public class AggressiveBot {
         this.controller = controller;
     }
 
-    public void pickRandomFrom(Button[][] board, String identifier){
-        Stack<Cord> possibleStarts = new Stack<>();
-        for(int y =0;y<board.length;y++){
-            for(int x =0;x<board[0].length;x++){
-                if(board[y][x].isVisible() && board[y][x].getStyle() == identifier){
-                    possibleStarts.push(new Cord(x, y));
-                }
-            }
-        }
-        this.from =  possibleStarts.getIndex(getRandomNumber(0, possibleStarts.length())); //ToFix This errors when the stack is empty and returns null
-    }
-
-    public void pickRandomTo(Button[][] board, String CloneId, String JumpID){
-        Cord bestMove = null;
+    public void pickRandomMove(Button[][] board, String identifier){
+        Cord bestMoveFrom = null;
+        Cord bestMoveTo = null;
         int piecesTaken = 0;
         for(int y =0;y<board.length;y++){
             for(int x =0;x<board[0].length;x++){
-                if(board[x][y].getStyle() == CloneId || board[x][y].getStyle() == JumpID){
-                    int currentConverter = controller.infectButtonsAmount(board[y][x]);
-                    if(currentConverter > piecesTaken){
-                        bestMove = new Cord(x, y);
-                        piecesTaken = currentConverter;
+                if(board[y][x].isVisible() && board[y][x].getStyle() == identifier){
+                    controller.ColorButtonsInner(new Cord(x, y));
+                    controller.ColorButtonsOuter(new Cord(x, y));
+                    for(int vertical = y-2; vertical <=y+2;vertical++){
+                        for(int horizontal = x-2; horizontal <=x+2;horizontal++){
+                            if(controller.isIndexInBoard(vertical, horizontal)){
+                                int infections = controller.infectButtonsAmount(board[y][x]);
+                                if(infections > piecesTaken){
+                                    piecesTaken = infections;
+                                    bestMoveFrom = new Cord(x, y);
+                                    bestMoveTo = new Cord(horizontal, vertical);
+                                }
+                            }
+                        
+                        }
                     }
+                    
+
                 }
             }
         }
-        if(bestMove == null){
+        if(bestMoveFrom == null && bestMoveTo == null){
             RandomBot bot = new RandomBot();
-            bot.from = this.from;
-            bot.pickRandomTo(board, CloneId, JumpID);
+            bot.pickRandomFrom(board, identifier);
+            this.from = bot.from;
+            bot.pickRandomTo(board, controller.CloneRadius, controller.JumpRadius);
             this.to = bot.to;
         }
         else{
-            this.to = bestMove;
+            this.from = bestMoveFrom;
+            this.to = bestMoveTo;
         }
+        controller.CloseMoveMenu();
+
     }
+
+    
+
+
+
+    public void pickRandomTo(Button[][] board, String CloneId, String JumpID){}
 
     private int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
