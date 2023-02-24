@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.basegame.Board;
+import com.shared.BoardState;
 import com.shared.Cord;
 import com.shared.GenericMove;
 import com.shared.Stack;
+import com.shared.Stack.StackItem;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,22 +18,29 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Ellipse;
 
-//TODO Win conditions, AI stuff, Undo
+//TODO AI stuff, Undo
 public class GameController extends AController implements Initializable{
 
     @FXML
     private GridPane GameBoard;
 
-    private Boolean PlayerTurn = true;
+    @FXML
+    private Ellipse Player1Indicator;
+
+    @FXML
+    private Ellipse Player2Indicator;
+
+    private Boolean PlayerTurn = true; //True is player 1, false is player 2
 
     public Button[][] Board;
-    public Stack<GenericMove<String>> movementStack = new Stack<>();
+    public Stack<BoardState<Button>> movementStack = new Stack<>();
 
     public final int boardsize = 7;
     public final Circle buttonShape = new Circle(89,101,20);
-    public final String player1Color = "-fx-background-color: #ff0000; ";
-    public final String player2Color = "-fx-background-color: #0000FF; ";
+    public final String player1Color = "-fx-background-color: #0000FF; ";
+    public final String player2Color = "-fx-background-color: #ff0000; ";
     public final String CloneRadius = "-fx-background-color: #FFFF00; ";
     public final String JumpRadius = "-fx-background-color: #FFA500; ";
 
@@ -70,47 +80,49 @@ public class GameController extends AController implements Initializable{
     public void setStartingPositions(){
         for(int i = Board.length-2;i<=Board.length-1;i++){
             for(int j=0;j<=1;j++){
-                Board[i][j].setVisible(true);
-                Board[i][j].setStyle(player1Color);
-
                 Board[j][i].setVisible(true);
-                Board[j][i].setStyle(player2Color);
+                Board[j][i].setStyle(player1Color);
 
+                Board[i][j].setVisible(true);
+                Board[i][j].setStyle(player2Color);
             }
         }
     }
    
    
-   
-   
     public void OpenMoveMenu(Button button, MouseEvent e) {
-        if(isButtonInMoveMenu(button)){
-            moveMenuOpen = false;
-            toButton = button;
-            if(isJumpButton(button)){
-                buttonJump(fromButton, toButton);
-            }
-            else{
-                buttonClone(fromButton, button);
-            }
-            CloseMoveMenu();
-            infectButtons(button);
-            movementStack.push(new GenericMove<String>(findButtonIndex(fromButton), findButtonIndex(button), button.getStyle()));
-        }
-        else{
-            if(moveMenuOpen){
+        if(isPlayerTurn(button) || isButtonInMoveMenu(button)){
+            if(isButtonInMoveMenu(button)){
                 moveMenuOpen = false;
+                toButton = button;
+                if(isJumpButton(button)){
+                    buttonJump(fromButton, toButton);
+                }
+                else{
+                    buttonClone(fromButton, button);
+                }
                 CloseMoveMenu();
-                OpenMoveMenu(button, e);
+                infectButtons(button);
+                movementStack.push(new BoardState<>(this.Board,this.PlayerTurn, this.GameBoard));
+                switchPlayer();
+                checkPlayerWin();
             }
             else{
-                moveMenuOpen = true;
-                fromButton = button;
-                Cord buttonIndex = findButtonIndex(button);
-                ColorButtonsOuter(buttonIndex);
-                ColorButtonsInner(buttonIndex);
-            }
+                if(moveMenuOpen){
+                    moveMenuOpen = false;
+                    CloseMoveMenu();
+                    OpenMoveMenu(button, e);
+                }
+                else{
+                    moveMenuOpen = true;
+                    fromButton = button;
+                    Cord buttonIndex = findButtonIndex(button);
+                    ColorButtonsOuter(buttonIndex);
+                    ColorButtonsInner(buttonIndex);
+                }
 
+            }
+            
         }
     }
     //MoveMenu Stuff
@@ -129,10 +141,11 @@ public class GameController extends AController implements Initializable{
     private void ColorButtonsOuter(Cord index){
         for(int vertical = index.getY()-2;vertical<=index.getY()+2;vertical++){
             for(int horizontal = index.getX()-2;horizontal<=index.getX()+2;horizontal++){
-                if(horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0){
+                if(isIndexInBoard(vertical,horizontal)){
                     if(!Board[horizontal][vertical].isVisible()){
                         Board[horizontal][vertical].setStyle(JumpRadius);
                         Board[horizontal][vertical].setVisible(true);
+                        Board[horizontal][vertical].setDisable(false);;
                     }
                 }
 
@@ -143,7 +156,7 @@ public class GameController extends AController implements Initializable{
     private void ColorButtonsInner(Cord index){
         for(int vertical = index.getY()-1;vertical<=index.getY()+1;vertical++){
             for(int horizontal = index.getX()-1;horizontal<=index.getX()+1;horizontal++){
-                if(horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0){
+                if(isIndexInBoard(vertical,horizontal)){
                     if(!Board[horizontal][vertical].isVisible() || Board[horizontal][vertical].getStyle() == JumpRadius){
                         Board[horizontal][vertical].setStyle(CloneRadius);
                         Board[horizontal][vertical].setVisible(true);
@@ -162,12 +175,17 @@ public class GameController extends AController implements Initializable{
                 if(isButtonInMoveMenu(Board[horizontal][vertical])){
                     Board[horizontal][vertical].setStyle(null);
                     Board[horizontal][vertical].setVisible(false);
+                    Board[horizontal][vertical].setDisable(true);;
+
                 }
 
             }
         }
     }
 
+    private boolean isIndexInBoard(int vertical, int horizontal){
+        return horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0;
+    }
     private boolean isButtonInMoveMenu(Button button){
         return button.getStyle() == JumpRadius || button.getStyle() == CloneRadius;
     }
@@ -203,9 +221,108 @@ public class GameController extends AController implements Initializable{
         }
     }
 
+    public boolean isPlayerTurn(Button button){
+        if(PlayerTurn){
+            return button.getStyle() == player1Color;
+        }
+        return button.getStyle() == player2Color;
+    }
+    public void switchPlayer(){
+        if(PlayerTurn){
+            Player2Indicator.setVisible(false);
+            Player1Indicator.setVisible(true);
+            
+        }
+        else{
+            Player1Indicator.setVisible(false);
+            Player2Indicator.setVisible(true);
+        }
+       PlayerTurn = !PlayerTurn;
+    }
+    
+
+    //Win Conditions checking
+    private void checkPlayerWin(){
+        if(hasUserValidMovesLeft(player1Color) == 0 && hasUserValidMovesLeft(player2Color) == 0){
+            try{
+                Main.show("WinnerPage", "Users have drawn!");
+            }catch (Exception e){}
+
+        }
+       if(hasUserValidMovesLeft(player1Color) == 0){
+            try{
+                Main.show("WinnerPage", "User 1 Has Won!");
+            }catch (Exception e){}
+
+        }
+        if(hasUserValidMovesLeft(player2Color) == 0){
+            try{
+                Main.show("WinnerPage", "User 2 Has Won!");
+            }catch (Exception e){}
+        }
+        
+    }
+   
+    private int hasUserValidMovesLeft(String identifier) {
+        int count = 0;
+        for (int i = 0; i < boardsize; i++) {
+            for (int j = 0; j < boardsize; j++) {
+                if (Board[i][j].getStyle() == identifier) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+
+    private boolean emptySpacesLeft(){
+        for(int y =0;y<boardsize;y++){
+            for(int x =0;x<boardsize;x++){
+                if(Board[y][x].isVisible()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private String mostPiecesOnBoard(){
+        int player1 = 0;
+        int player2 = 0;
+        for(int y =0;y<boardsize;y++){
+            for(int x =0;x<boardsize;x++){
+                if(Board[x][y].getStyle() == player1Color){player1++;}
+                if(Board[x][y].getStyle() == player2Color){player2++;}
+            }
+        }
+        if(player1 > player2){
+            return "PLayer 1 wins by count!";
+        }
+        else{
+            return "Player 2 wins by count!";
+        }
+    }
+    
+    //Undo Handling
+    public void undoMove(){
+        System.out.println(whichPlayerTurn() +" is cheating!");
+        CloseMoveMenu();
+        loadPreviousBoard();
+
+    }
+    public void loadPreviousBoard(){
+        BoardState<Button> previousState = movementStack.getIndex(0);
+        this.PlayerTurn = previousState.playerturn;
+        this.Board = previousState.board;
+        this.GameBoard = previousState.displayBoard;
+        movementStack.pop();
+    }
+    
+    
+    
     //Non game buttons
     public void ResetGame() throws IOException{
-        Main.show("game");
+        Main.show("game","");
     }
 
     
@@ -215,4 +332,13 @@ public class GameController extends AController implements Initializable{
             GameBoard.getChildren().remove(i);
         }
     }
+    private String whichPlayerTurn(){
+        if(PlayerTurn){
+            return "Player 1";
+        }
+        else{
+            return "Player 2";
+        }
+    }
+
 }

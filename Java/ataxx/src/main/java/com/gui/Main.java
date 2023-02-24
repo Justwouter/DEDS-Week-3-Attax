@@ -23,14 +23,18 @@ public class Main extends Application {
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
         primaryStage.getIcons().add(new Image("file:src/main/resources/com/gui/images/logo/Tux.png"));
-        show("homepage");
+        show("homepage", "");
     }
 
-    public static void show(String fxml) throws IOException {
+    public static void show(String fxml, String winner) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
         BorderPane mainLayout = loader.load();
 
+
+        AController controller = loader.getController();
+        controller.WinnerLabel.setText(winner);
+        
         Scene scene = new Scene(mainLayout, 1280, 720);
         primaryStage.setScene(scene);
         String c = fxml.substring(0, 1).toUpperCase();
