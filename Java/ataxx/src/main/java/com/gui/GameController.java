@@ -56,6 +56,7 @@ public class GameController extends AController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         fillBoard();
         setStartingPositions();
+        movementStack.push(generateBoardState());
     }
 
     public void fillBoard(){
@@ -102,8 +103,8 @@ public class GameController extends AController implements Initializable{
                     buttonClone(fromButton, button);
                 }
                 CloseMoveMenu();
+                movementStack.push(generateBoardState());
                 infectButtons(button);
-                movementStack.push(new BoardState<>(this.Board,this.PlayerTurn, this.GameBoard));
                 switchPlayer();
                 checkPlayerWin();
             }
@@ -208,17 +209,20 @@ public class GameController extends AController implements Initializable{
         to.setVisible(true);
     }
 
-    private void infectButtons(Button button){
+    private Stack<Cord> infectButtons(Button button){
         Cord index = findButtonIndex(button);
+        Stack<Cord> convertStack = new Stack<>();
         for(int vertical = index.getY()-1;vertical<=index.getY()+1;vertical++){
             for(int horizontal = index.getX()-1;horizontal<=index.getX()+1;horizontal++){
                 if(horizontal < boardsize && horizontal>=0 && vertical < boardsize && vertical >= 0){
                     if(Board[horizontal][vertical].isVisible() && !isButtonInMoveMenu(Board[horizontal][vertical])){
                         Board[horizontal][vertical].setStyle(button.getStyle());
+                        convertStack.push(new Cord(horizontal, vertical));
                     }
                 }
             }
         }
+        return convertStack;
     }
 
     public boolean isPlayerTurn(Button button){
@@ -305,17 +309,35 @@ public class GameController extends AController implements Initializable{
     
     //Undo Handling
     public void undoMove(){
-        System.out.println(whichPlayerTurn() +" is cheating!");
-        CloseMoveMenu();
-        loadPreviousBoard();
-
+        if(movementStack.length() > 0){
+            System.out.println(whichPlayerTurn(false) +" is cheating!");
+            CloseMoveMenu();
+            loadPreviousBoard();
+        }
     }
     public void loadPreviousBoard(){
-        BoardState<Button> previousState = movementStack.getIndex(0);
-        this.PlayerTurn = previousState.playerturn;
-        this.Board = previousState.board;
-        this.GameBoard = previousState.displayBoard;
-        movementStack.pop();
+        BoardState<Button> previouState= movementStack.pop().getData();
+        for(int vertical =0;vertical<boardsize;vertical++){
+            for(int horizontal =0;horizontal<boardsize;horizontal++){
+                Board[horizontal][vertical].setShape(previouState.board[horizontal][vertical].getShape());
+                Board[horizontal][vertical].setVisible(previouState.board[horizontal][vertical].isVisible());
+                Board[horizontal][vertical].setStyle(previouState.board[horizontal][vertical].getStyle());
+            }
+        }  
+    }
+
+    public BoardState<Button> generateBoardState(){
+        Button[][] colorMap = new Button[boardsize][boardsize];
+        for(int vertical =0;vertical<boardsize;vertical++){
+            for(int horizontal =0;horizontal<boardsize;horizontal++){
+                Button myButton = new Button();
+                myButton.setShape(Board[horizontal][vertical].getShape());
+                myButton.setVisible(Board[horizontal][vertical].isVisible());
+                myButton.setStyle(Board[horizontal][vertical].getStyle());
+                colorMap[horizontal][vertical] = myButton;
+            }
+        }
+        return new BoardState<>(colorMap);
     }
     
     
@@ -332,7 +354,15 @@ public class GameController extends AController implements Initializable{
             GameBoard.getChildren().remove(i);
         }
     }
-    private String whichPlayerTurn(){
+    private String whichPlayerTurn(boolean code){
+        if(code){
+            if(PlayerTurn){
+                return player1Color;
+            }
+            else{
+                return player2Color;
+            }
+        }
         if(PlayerTurn){
             return "Player 1";
         }

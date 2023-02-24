@@ -6,6 +6,10 @@ public class BoardState<T> {
     public T[][] board;
     public boolean playerturn;
     public GridPane displayBoard;
+
+    public BoardState(T[][] board){
+        this.board = board;
+    }
     
     public BoardState(T[][] board, boolean playerturn, GridPane display){
         this.board = board;
