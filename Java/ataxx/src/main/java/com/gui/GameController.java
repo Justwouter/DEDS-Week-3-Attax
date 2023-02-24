@@ -12,7 +12,9 @@ import com.shared.Stack;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
@@ -61,7 +63,21 @@ public class GameController extends AController implements Initializable{
         clearBoard();
         Board = new Button[boardsize][boardsize];
         for(int x =0;x<boardsize;x++){
+
+            Label verticalLabel = new Label(""+(x+1));
+            GridPane.setHalignment(verticalLabel, HPos.LEFT);
+            GridPane.setValignment(verticalLabel, VPos.TOP);
+            GameBoard.add(verticalLabel, 0, x);
+
             for(int y =0;y<boardsize;y++){
+
+                if(y == 0){
+                    Label horizontalLabel = new Label(""+(x+1));
+                    GridPane.setHalignment(horizontalLabel, HPos.LEFT);
+                    GridPane.setValignment(horizontalLabel, VPos.TOP);
+                    GameBoard.add(horizontalLabel, x, y);
+                }
+
                 Button myButton = new Button();
                 //Button rules
                 myButton.setShape(buttonShape);
