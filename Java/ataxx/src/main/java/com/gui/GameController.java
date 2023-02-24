@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.basegame.Board;
+import com.gui.Bot.RandomBot;
 import com.shared.BoardState;
 import com.shared.Cord;
-import com.shared.GenericMove;
 import com.shared.Stack;
-import com.shared.Stack.StackItem;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -107,6 +105,9 @@ public class GameController extends AController implements Initializable{
                 movementStack.push(generateBoardState());
                 switchPlayer();
                 checkPlayerWin();
+                if(player2IsBot && !PlayerTurn){
+                    doBotMove();
+                }
             }
             else{
                 if(moveMenuOpen){
@@ -126,6 +127,19 @@ public class GameController extends AController implements Initializable{
             
         }
     }
+
+
+    //Bot specific
+    public void doBotMove(){
+        RandomBot ai = new RandomBot();
+        ai.pickRandomFrom(Board, player2Color);
+        OpenMoveMenu(Board[ai.from.getY()][ai.from.getX()], null);
+        ai.pickRandomTo(Board, CloneRadius, JumpRadius);
+        OpenMoveMenu(Board[ai.to.getX()][ai.to.getY()], null);
+
+    }
+
+
     //MoveMenu Stuff
     private Cord findButtonIndex(Button button){
         for(int vertical =0;vertical<boardsize;vertical++){
@@ -249,19 +263,19 @@ public class GameController extends AController implements Initializable{
     private void checkPlayerWin(){
         if(hasUserValidMovesLeft(player1Color) == 0 && hasUserValidMovesLeft(player2Color) == 0){
             try{
-                Main.show("WinnerPage", "Users have drawn!");
+                Main.show("WinnerPage", "Users have drawn!",false);
             }catch (Exception e){}
 
         }
        if(hasUserValidMovesLeft(player1Color) == 0){
             try{
-                Main.show("WinnerPage", "User 1 Has Won!");
+                Main.show("WinnerPage", "User 1 Has Won!",false);
             }catch (Exception e){}
 
         }
         if(hasUserValidMovesLeft(player2Color) == 0){
             try{
-                Main.show("WinnerPage", "User 2 Has Won!");
+                Main.show("WinnerPage", "User 2 Has Won!",false);
             }catch (Exception e){}
         }
         
@@ -344,7 +358,7 @@ public class GameController extends AController implements Initializable{
     
     //Non game buttons
     public void ResetGame() throws IOException{
-        Main.show("game","");
+        Main.show("game","",false);
     }
 
     

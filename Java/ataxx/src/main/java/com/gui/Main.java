@@ -23,10 +23,10 @@ public class Main extends Application {
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
         primaryStage.getIcons().add(new Image("file:src/main/resources/com/gui/images/logo/Tux.png"));
-        show("homepage", "");
+        show("homepage", "",false);
     }
 
-    public static void show(String fxml, String winner) throws IOException {
+    public static void show(String fxml, String winner, Boolean player2IsBot) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
         BorderPane mainLayout = loader.load();
@@ -34,6 +34,7 @@ public class Main extends Application {
 
         AController controller = loader.getController();
         controller.WinnerLabel.setText(winner);
+        controller.player2IsBot = player2IsBot;
         
         Scene scene = new Scene(mainLayout, 1280, 720);
         primaryStage.setScene(scene);
