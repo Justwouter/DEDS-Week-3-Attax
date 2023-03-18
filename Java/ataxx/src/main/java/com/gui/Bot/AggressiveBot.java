@@ -43,7 +43,7 @@ public class AggressiveBot {
             }
         }
         if(bestMoveFrom == null && bestMoveTo == null){
-            RandomBot bot = new RandomBot();
+            RandomBot bot = new RandomBot(controller);
             bot.pickRandomFrom(board, identifier);
             this.from = bot.from;
             bot.pickRandomTo(board, controller.CloneRadius, controller.JumpRadius);

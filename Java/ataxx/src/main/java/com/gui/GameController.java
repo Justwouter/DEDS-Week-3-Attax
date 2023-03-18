@@ -302,13 +302,13 @@ public class GameController extends AController implements Initializable{
         }
        if(hasUserValidMovesLeft(player1Color) == 0){
             try{
-                Main.show("WinnerPage", "User 1 Has Won!",false);
+                Main.show("WinnerPage", "User 2 Has Won!",false);
             }catch (Exception e){}
 
         }
         if(hasUserValidMovesLeft(player2Color) == 0){
             try{
-                Main.show("WinnerPage", "User 2 Has Won!",false);
+                Main.show("WinnerPage", "User 1 Has Won!",false);
             }catch (Exception e){}
         }
         
