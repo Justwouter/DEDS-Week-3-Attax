@@ -2,18 +2,18 @@ package com.shared;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
 
 public class TestStack{
     //TODO Better test plan
-    static Stack<Object> testStack = new Stack<>();
+    Stack<Object> testStack = new Stack<>();
 
-    @BeforeAll
-    public static void init(){
-        testStack = new Stack<>();
+    @BeforeEach
+    public void init(){
+        this.testStack = new Stack<>();
     }
 
     @Test
