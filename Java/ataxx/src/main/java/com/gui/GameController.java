@@ -1,12 +1,13 @@
 package com.gui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import com.shared.Cord;
 import com.shared.Stack;
+import com.gui.Bot.ARobot;
+import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
 
 import javafx.event.Event;
@@ -14,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -22,6 +22,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 public class GameController extends AController implements Initializable {
 
@@ -48,7 +49,7 @@ public class GameController extends AController implements Initializable {
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
 
     public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Wouter", player0Color, false);
-    public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, false);
+    public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, true);
 
     public GameController() {
     }
@@ -145,11 +146,16 @@ public class GameController extends AController implements Initializable {
             infectEnemyButtons(findButtonIndex(button)); // Recolor adjecent pieces
             updateScoreboard(); // Update scoreboard on the side
             takeSnapshot(); // push new state to stack
-            checkGameEnding();
+            Boolean gameEnded = checkGameEnding();
 
             switchPlayer();
-            if (getCurrentPlayer().IsBot()) {
+            if (!gameEnded && getCurrentPlayer().IsBot()) {
                 // do bot stuff
+                doBotMove();
+
+                updateScoreboard(); 
+                takeSnapshot(); 
+                checkGameEnding();
                 switchPlayer();
             }
         }
@@ -258,16 +264,40 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Bot Movement Code==========================
+    public void doBotMove(){
+        ARobot bot = new RandomBot(this);
+        Pair<Cord,Cord> move= bot.getMoveCords();
+        Cord from = move.getKey();
+        Cord to = move.getValue();
+        
+        if(isJumpMove(from, to)){
+            fromButton = Board[from.getVertical()][from.getHorizontal()];
+            clearButton(fromButton);
+        }
+        Shape toButton =  Board[to.getVertical()][to.getHorizontal()];
+        toButton.setFill(getCurrentPlayer().getPlayerColor());
+        toButton.setDisable(false);
+        toButton.setVisible(true);
 
+        infectEnemyButtons(to);
+
+    }
+
+    public boolean isJumpMove(Cord from, Cord to){
+        return !(Math.abs(from.getHorizontal() - to.getHorizontal()) < 2 && Math.abs(from.getVertical() - to.getVertical()) < 2);
+    }
     // ===============Win conditions==========================
-    public void checkGameEnding() {
+    public boolean checkGameEnding() {
         if (checkBoardFull()) {
             Player player = getPlayerwithMostPoints();
             Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!");
+            return true;
         } else if (!checkNextPlayerHasMoves()) {
             Player player = getCurrentPlayer();
             Main.show("WinnerPage", player.getName() + " Wins by technical knockout!");
+            return true;
         }
+        return false;
 
     }
 
