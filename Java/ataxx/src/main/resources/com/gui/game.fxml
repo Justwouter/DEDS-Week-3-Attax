@@ -48,6 +48,6 @@
       </Button>
    </bottom>
    <center>
-      <Button mnemonicParsing="false" onAction="#undoMove" text="Undo" BorderPane.alignment="CENTER" />
+      <Button mnemonicParsing="false" text="Undo" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>
