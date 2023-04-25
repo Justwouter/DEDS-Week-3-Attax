@@ -11,7 +11,7 @@ public class WinnerController extends AController{
     
 
     public void switchToGame() throws Exception{
-        Main.show("homepage","", false);
+        Main.show("homepage","");
     }
     
 }

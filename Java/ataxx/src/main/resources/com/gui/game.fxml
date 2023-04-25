@@ -34,8 +34,7 @@
                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="65.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Ellipse fx:id="Player2Indicator" fill="DODGERBLUE" layoutX="53.0" layoutY="283.0" radiusX="19.0" radiusY="18.0" stroke="BLACK" strokeType="INSIDE" />
-            <Ellipse fx:id="Player1Indicator" fill="RED" layoutX="53.0" layoutY="283.0" radiusX="19.0" radiusY="18.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+            <Ellipse fx:id="PlayerIndicator" fill="DODGERBLUE" layoutX="53.0" layoutY="283.0" radiusX="19.0" radiusY="18.0" stroke="BLACK" strokeType="INSIDE" />
             <Label layoutX="30.0" layoutY="248.0" text="Turn For" />
          </children>
       </AnchorPane>

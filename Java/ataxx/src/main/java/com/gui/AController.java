@@ -7,5 +7,6 @@ public abstract class AController {
     @FXML
     public Label WinnerLabel = new Label();
 
-    public boolean player2IsBot = false;
+    
+
 }
