@@ -2,6 +2,7 @@ package com.gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import com.shared.Cord;
@@ -33,7 +34,7 @@ public class GameController extends AController implements Initializable {
     public Shape[][] Board;
 
     public final int boardsize = 7;
-    public final Paint player0Color = Color.rgb(0, 0, 255);
+    public final Paint player0Color = Color.rgb(30, 144, 255);
     public final Paint player1Color = Color.rgb(255, 0, 0);
     public final Paint CloneRadius = Color.rgb(255, 255, 0);
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
@@ -111,11 +112,12 @@ public class GameController extends AController implements Initializable {
     // Downside is that you can't play bot vs bot & the player needs to start.
     public void ClickHandler(Shape button, Event e) {
         Player player = getCurrentPlayer();
+
         // Player clicking own piece
         if (button.getFill() == player.getPlayerColor()) {
-            if(moveMenuOpen){
+            if (moveMenuOpen) {
                 closePlayerMovementMenu();
-            }   
+            }
             if (!player.IsBot()) {
                 openPlayerMovementMenu(button);
                 fromButton = button;
@@ -123,8 +125,8 @@ public class GameController extends AController implements Initializable {
         }
 
         // Player clicking piece in movement menu
-        else if(isButtonInMovementMenu(button)){
-            if(button.getFill() == JumpRadius){
+        else if (isButtonInMovementMenu(button)) {
+            if (button.getFill() == JumpRadius) {
                 clearButton(fromButton);
             }
             button.setFill(player.getPlayerColor());
@@ -134,15 +136,15 @@ public class GameController extends AController implements Initializable {
             closePlayerMovementMenu();
             infectEnemyButtons(findButtonIndex(button));
 
+            checkGameEnding();
+
             switchPlayer();
             if (getCurrentPlayer().IsBot()) {
-                //do bot stuff
+                // do bot stuff
                 switchPlayer();
             }
         }
     }
-
-
 
     // ===============Player Movement code==========================
     public void activatePlayerButtons(Player player) {
@@ -168,17 +170,17 @@ public class GameController extends AController implements Initializable {
     }
 
     public void openPlayerMovementMenu(Shape button) {
-        //button.setFill(Color.rgb(255, 0, 255));
+        // button.setFill(Color.rgb(255, 0, 255));
         Cord buttonCords = findButtonIndex(button);
         colorButtonsOuterJumpRadius(buttonCords);
         colorButtonsInnerCloneRadius(buttonCords);
         moveMenuOpen = true;
     }
 
-    public Cord findButtonIndex(Shape button){
+    public Cord findButtonIndex(Shape button) {
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
-                if(Board[verticalIndex][horizontalIndex] == button){
+                if (Board[verticalIndex][horizontalIndex] == button) {
                     return new Cord(verticalIndex, horizontalIndex);
                 }
             }
@@ -186,11 +188,13 @@ public class GameController extends AController implements Initializable {
         return null;
     }
 
-    public void colorButtonsOuterJumpRadius(Cord index){
-        for (int horizontalIndex = index.getHorizontal()-2; horizontalIndex <= index.getHorizontal()+2; horizontalIndex++) {
-            for (int verticalIndex = index.getVertical()-2; verticalIndex <= index.getVertical()+2; verticalIndex++) {
-                if(isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)){
-                    if(!Board[verticalIndex][horizontalIndex].isVisible()){
+    public void colorButtonsOuterJumpRadius(Cord index) {
+        for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
+                + 2; horizontalIndex++) {
+            for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
+                    + 2; verticalIndex++) {
+                if (isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)) {
+                    if (!Board[verticalIndex][horizontalIndex].isVisible()) {
                         Board[verticalIndex][horizontalIndex].setFill(JumpRadius);
                         Board[verticalIndex][horizontalIndex].setVisible(true);
                         Board[verticalIndex][horizontalIndex].setDisable(false);
@@ -200,11 +204,13 @@ public class GameController extends AController implements Initializable {
         }
     }
 
-    public void colorButtonsInnerCloneRadius(Cord index){
-        for (int horizontalIndex = index.getHorizontal()-1; horizontalIndex <= index.getHorizontal()+1; horizontalIndex++) {
-            for (int verticalIndex = index.getVertical()-1; verticalIndex <= index.getVertical()+1; verticalIndex++) {
-                if(isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)){
-                    if(isButtonInMovementMenu(Board[verticalIndex][horizontalIndex])){
+    public void colorButtonsInnerCloneRadius(Cord index) {
+        for (int horizontalIndex = index.getHorizontal() - 1; horizontalIndex <= index.getHorizontal()
+                + 1; horizontalIndex++) {
+            for (int verticalIndex = index.getVertical() - 1; verticalIndex <= index.getVertical()
+                    + 1; verticalIndex++) {
+                if (isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)) {
+                    if (isButtonInMovementMenu(Board[verticalIndex][horizontalIndex])) {
                         Board[verticalIndex][horizontalIndex].setFill(CloneRadius);
                         Board[verticalIndex][horizontalIndex].setVisible(true);
                         Board[verticalIndex][horizontalIndex].setDisable(false);
@@ -218,7 +224,7 @@ public class GameController extends AController implements Initializable {
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
                 Shape button = Board[verticalIndex][horizontalIndex];
-                if(isButtonInMovementMenu(button)){
+                if (isButtonInMovementMenu(button)) {
                     clearButton(button);
                 }
             }
@@ -226,12 +232,14 @@ public class GameController extends AController implements Initializable {
         moveMenuOpen = false;
     }
 
-    public void infectEnemyButtons(Cord index){
-        for (int horizontalIndex = index.getHorizontal()-1; horizontalIndex <= index.getHorizontal()+1; horizontalIndex++) {
-            for (int verticalIndex = index.getVertical()-1; verticalIndex <= index.getVertical()+1; verticalIndex++) {
-                if(isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)){
+    public void infectEnemyButtons(Cord index) {
+        for (int horizontalIndex = index.getHorizontal() - 1; horizontalIndex <= index.getHorizontal()
+                + 1; horizontalIndex++) {
+            for (int verticalIndex = index.getVertical() - 1; verticalIndex <= index.getVertical()
+                    + 1; verticalIndex++) {
+                if (isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)) {
                     Shape button = Board[verticalIndex][horizontalIndex];
-                    if(button.getFill() == getOtherPlayer().getPlayerColor() && button.isVisible()){
+                    if (button.getFill() == getOtherPlayer().getPlayerColor() && button.isVisible()) {
                         Board[verticalIndex][horizontalIndex].setFill(getCurrentPlayer().getPlayerColor());
                     }
                 }
@@ -243,8 +251,67 @@ public class GameController extends AController implements Initializable {
     // ===============Bot Movement Code==========================
 
     // ===============Win conditions==========================
-    public boolean isGameDone() {
+    public void checkGameEnding() {
+        if(checkBoardFull()){
+            Player player = getPlayerwithMostPoints();
+            Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!");
+        }
+        else if(!checkNextPlayerHasMoves()){
+            Player player = getCurrentPlayer();
+            Main.show("WinnerPage", player.getName() + " Wins by technical knockout!");
+        }
+        
+    }
+
+    public boolean checkNextPlayerHasMoves() {
+        Player player = getOtherPlayer();
+        ArrayList<Cord> cords = findPlayerPieces(player);
+
+        for (Cord index : cords){
+            for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()+ 2; horizontalIndex++) {
+                for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()+ 2; verticalIndex++) {
+                    if (isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)) {
+                        if (!Board[verticalIndex][horizontalIndex].isVisible()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
+    }
+
+    public boolean checkBoardFull() {
+        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                var button = Board[verticalIndex][horizontalIndex];
+                if (!(button.getFill() == player0.getPlayerColor()) || !(button.getFill() == player1.getPlayerColor())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public ArrayList<Cord> findPlayerPieces(Player player){
+        ArrayList<Cord> cords = new ArrayList<>();
+        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                var button = Board[verticalIndex][horizontalIndex];
+                if(button.getFill() == player.getPlayerColor()){
+                    cords.add(new Cord(verticalIndex, horizontalIndex));
+                }
+            }
+        }
+        return cords;
+    }
+
+    public Player getPlayerwithMostPoints(){
+        int player0Pieces = findPlayerPieces(player0).size();
+        int player1Pieces = findPlayerPieces(player1).size();
+        if(player0Pieces > player1Pieces)
+            return player0;
+        return player1;
     }
 
     // ===============Helpers==========================
@@ -260,7 +327,8 @@ public class GameController extends AController implements Initializable {
         }
         return player0;
     }
-    public Player getOtherPlayer(){
+
+    public Player getOtherPlayer() {
         if (PlayerTurn) {
             return player0;
         }
@@ -276,11 +344,11 @@ public class GameController extends AController implements Initializable {
         return i > -1 && i < Board.length;
     }
 
-    public boolean isButtonInMovementMenu(Shape button){
+    public boolean isButtonInMovementMenu(Shape button) {
         return button.isVisible() && (button.getFill() == JumpRadius || button.getFill() == CloneRadius);
     }
 
-    public void clearButton(Shape button){
+    public void clearButton(Shape button) {
         button.setFill(Color.rgb(0, 0, 0));
         button.setVisible(false);
         button.setDisable(true);

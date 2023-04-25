@@ -8,7 +8,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 //import com.game.Stack;
 
-import java.io.IOException;
 
 
 public class Main extends Application {
@@ -26,21 +25,28 @@ public class Main extends Application {
         show("homepage", "");
     }
 
-    public static void show(String fxml, String winner) throws IOException {
+    public static void show(String fxml, String winner) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
-        BorderPane mainLayout = loader.load();
+        BorderPane mainLayout = null;
+        try{
+            mainLayout= loader.load();
+            AController controller = loader.getController();
+            controller.WinnerLabel.setText(winner);
+            
+            Scene scene = new Scene(mainLayout, 1280, 720);
+            primaryStage.setScene(scene);
+            String c = fxml.substring(0, 1).toUpperCase();
+            String title = c + fxml.substring(1);
+            primaryStage.setTitle(title);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        }
+        catch(Exception e){
+            System.out.println(e);
+        }
 
 
-        AController controller = loader.getController();
-        controller.WinnerLabel.setText(winner);
         
-        Scene scene = new Scene(mainLayout, 1280, 720);
-        primaryStage.setScene(scene);
-        String c = fxml.substring(0, 1).toUpperCase();
-        String title = c + fxml.substring(1);
-        primaryStage.setTitle(title);
-        primaryStage.setResizable(false);
-        primaryStage.show();
     }
 }

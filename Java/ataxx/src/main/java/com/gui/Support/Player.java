@@ -9,6 +9,7 @@ public class Player {
     int id;
     Paint playerColor;
     boolean isBot;
+    int totalPointsInCurrentGame;
     //Add statcounters here or smth
 
     public Player(Shape icon, String name, Paint color, Boolean isBot){
@@ -52,6 +53,13 @@ public class Player {
 
     public void setPlayerColor(Paint playerColor) {
         this.playerColor = playerColor;
+    }
+
+    public void setGamePoints(int points){
+        this.totalPointsInCurrentGame = points;
+    }
+    public int getGamePoints(){
+        return totalPointsInCurrentGame;
     }
 
 }
