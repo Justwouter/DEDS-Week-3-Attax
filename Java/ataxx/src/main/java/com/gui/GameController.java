@@ -14,12 +14,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 public class GameController extends AController implements Initializable {
 
@@ -29,9 +31,15 @@ public class GameController extends AController implements Initializable {
     @FXML
     private Ellipse PlayerIndicator;
 
+    @FXML
+    private GridPane ScoreBoard;
+
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
+    public boolean moveMenuOpen = false;
+    public Shape fromButton;
 
     public Shape[][] Board;
+    Stack<Shape[][]> stateStack = new Stack<>();
 
     public final int boardsize = 7;
     public final Paint player0Color = Color.rgb(30, 144, 255);
@@ -39,21 +47,19 @@ public class GameController extends AController implements Initializable {
     public final Paint CloneRadius = Color.rgb(255, 255, 0);
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
 
-    public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Charlie", player0Color, false);
-    public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "JAck", player1Color, false);
-
-    public boolean moveMenuOpen = false;
-    public Shape fromButton;
-    public Shape toButton;
+    public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Wouter", player0Color, false);
+    public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, false);
 
     public GameController() {
     }
 
-    // ===============Setup board==========================
+    // ===============Setup==========================
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         fillBoard();
         setStartingPositions();
+        updateScoreboard();
+        takeSnapshot();
     }
 
     public void fillBoard() {
@@ -77,16 +83,17 @@ public class GameController extends AController implements Initializable {
                     GameBoard.add(horizontalLabel, horizontalIndex, verticalIndex);
                 }
 
-                Shape myButton = new Ellipse(53.0, 283.0, 19.0, 18.0);
+                Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
                 // Button rules
-                myButton.setVisible(false);
-                myButton.setOnMouseClicked(e -> ClickHandler(myButton, e));
+                piece.setVisible(false);
+                piece.setOnMouseClicked(e -> ClickHandler(piece, e));
 
-                GridPane.setHalignment(myButton, HPos.CENTER);
-                Board[verticalIndex][horizontalIndex] = myButton;
-                GameBoard.add(myButton, verticalIndex, horizontalIndex);
+                GridPane.setHalignment(piece, HPos.CENTER);
+                Board[verticalIndex][horizontalIndex] = piece;
+                GameBoard.add(piece, verticalIndex, horizontalIndex);
             }
         }
+
     }
 
     // Once pointer madness is figured out, add support for custom icons
@@ -107,10 +114,11 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Gameplay loop==========================
-    // Don't know how to implement an actual gameplay loop in jfx
-    // So janky onclicks will have to do.
-    // Downside is that you can't play bot vs bot & the player needs to start.
+
     public void ClickHandler(Shape button, Event e) {
+        // Don't know how to implement an actual gameplay loop in jfx
+        // So janky onclicks will have to do.
+        // Downside is that you can't play bot vs bot & the player needs to start.
         Player player = getCurrentPlayer();
 
         // Player clicking own piece
@@ -133,9 +141,10 @@ public class GameController extends AController implements Initializable {
             button.setDisable(false);
             button.setVisible(true);
 
-            closePlayerMovementMenu();
-            infectEnemyButtons(findButtonIndex(button));
-
+            closePlayerMovementMenu(); // Hide valid move assistent
+            infectEnemyButtons(findButtonIndex(button)); // Recolor adjecent pieces
+            updateScoreboard(); // Update scoreboard on the side
+            takeSnapshot(); // push new state to stack
             checkGameEnding();
 
             switchPlayer();
@@ -252,24 +261,25 @@ public class GameController extends AController implements Initializable {
 
     // ===============Win conditions==========================
     public void checkGameEnding() {
-        if(checkBoardFull()){
+        if (checkBoardFull()) {
             Player player = getPlayerwithMostPoints();
             Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!");
-        }
-        else if(!checkNextPlayerHasMoves()){
+        } else if (!checkNextPlayerHasMoves()) {
             Player player = getCurrentPlayer();
             Main.show("WinnerPage", player.getName() + " Wins by technical knockout!");
         }
-        
+
     }
 
     public boolean checkNextPlayerHasMoves() {
         Player player = getOtherPlayer();
         ArrayList<Cord> cords = findPlayerPieces(player);
 
-        for (Cord index : cords){
-            for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()+ 2; horizontalIndex++) {
-                for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()+ 2; verticalIndex++) {
+        for (Cord index : cords) {
+            for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
+                    + 2; horizontalIndex++) {
+                for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
+                        + 2; verticalIndex++) {
                     if (isIndexWithinBounds(horizontalIndex) && isIndexWithinBounds(verticalIndex)) {
                         if (!Board[verticalIndex][horizontalIndex].isVisible()) {
                             return true;
@@ -285,7 +295,8 @@ public class GameController extends AController implements Initializable {
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
                 var button = Board[verticalIndex][horizontalIndex];
-                if (!(button.getFill() == player0.getPlayerColor()) || !(button.getFill() == player1.getPlayerColor())) {
+                if (!(button.getFill() == player0.getPlayerColor())
+                        || !(button.getFill() == player1.getPlayerColor())) {
                     return false;
                 }
             }
@@ -293,12 +304,12 @@ public class GameController extends AController implements Initializable {
         return true;
     }
 
-    public ArrayList<Cord> findPlayerPieces(Player player){
+    public ArrayList<Cord> findPlayerPieces(Player player) {
         ArrayList<Cord> cords = new ArrayList<>();
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
                 var button = Board[verticalIndex][horizontalIndex];
-                if(button.getFill() == player.getPlayerColor()){
+                if (button.getFill() == player.getPlayerColor()) {
                     cords.add(new Cord(verticalIndex, horizontalIndex));
                 }
             }
@@ -306,18 +317,93 @@ public class GameController extends AController implements Initializable {
         return cords;
     }
 
-    public Player getPlayerwithMostPoints(){
+    public Player getPlayerwithMostPoints() {
         int player0Pieces = findPlayerPieces(player0).size();
         int player1Pieces = findPlayerPieces(player1).size();
-        if(player0Pieces > player1Pieces)
+        if (player0Pieces > player1Pieces)
             return player0;
         return player1;
+    }
+
+    // ===============States & Undo==========================
+    public void takeSnapshot() {
+        Shape[][] storage = new Shape[boardsize][boardsize];
+        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                var button = Board[verticalIndex][horizontalIndex];
+                storage[verticalIndex][horizontalIndex] = new Ellipse(53.0, 283.0, 19.0, 18.0);
+                storage[verticalIndex][horizontalIndex].setFill(button.getFill());
+                storage[verticalIndex][horizontalIndex].setVisible(button.isVisible());
+                storage[verticalIndex][horizontalIndex].setDisable(button.isDisabled());
+            }
+        }
+        stateStack.push(storage);
+    }
+
+    public void loadSnapshot() {
+        Shape[][] storage = null;
+        try {
+            storage = stateStack.pop().getData();
+            //Skip the first savepoint b\c it's worthless
+            storage = stateStack.pop().getData();
+            
+        } catch (StackOverflowError e) {
+            System.out.println("Stack Empty!");
+        }
+        if (storage != null) {
+            clearBoard();
+            for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+                for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                    var button = storage[verticalIndex][horizontalIndex];
+                    var newButton = new Ellipse(53.0, 283.0, 19.0, 18.0);
+                    newButton.setFill(button.getFill());
+                    newButton.setVisible(button.isVisible());
+                    newButton.setDisable(button.isDisabled());
+                    newButton.setOnMouseClicked(e -> ClickHandler(newButton, e));
+                    Board[verticalIndex][horizontalIndex] = newButton;
+                    GridPane.setHalignment(newButton, HPos.CENTER);
+                    GameBoard.add(newButton, verticalIndex, horizontalIndex);
+                }
+            }
+            switchPlayer();
+            updateScoreboard();
+            takeSnapshot(); // Retake the snapshot as if the turn has already happend
+        }
+    }
+
+    // ===============Scoreboard==========================
+    public void updateScoreboard() {
+        updatePlayerScores();
+
+        ScoreBoard.getChildren().removeAll(ScoreBoard.getChildren());
+        Stack<Player> ScoreStack = new Stack<>();
+
+        int player0Pieces = findPlayerPieces(player0).size();
+        int player1Pieces = findPlayerPieces(player1).size();
+        if (player0Pieces > player1Pieces) {
+            ScoreStack.push(player1);
+            ScoreStack.push(player0);
+        } else {
+            ScoreStack.push(player0);
+            ScoreStack.push(player1);
+        }
+        for (int i = 0; i <= ScoreStack.length(); i++) {
+            Player player = ScoreStack.pop().getData();
+            ScoreBoard.add(new Text(player.getName()), 1, i);
+            ScoreBoard.add(new Text("" + player.getGamePoints()), 2, i);
+        }
+
+    }
+
+    public void updatePlayerScores() {
+        getCurrentPlayer().setGamePoints(findPlayerPieces(getCurrentPlayer()).size());
+        getOtherPlayer().setGamePoints(findPlayerPieces(getOtherPlayer()).size());
     }
 
     // ===============Helpers==========================
     public void clearBoard() {
         for (int i = 1; i < GameBoard.getChildren().size(); i++) {
-            GameBoard.getChildren().remove(i);
+            GameBoard.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && !(node instanceof Label));
         }
     }
 
@@ -355,7 +441,7 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Control button functionality==========================
-    public void ResetGame() throws IOException {
+    public void ResetGame() {
         Main.show("game", "");
     }
 }
