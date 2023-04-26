@@ -1,6 +1,6 @@
 package com.gui;
 
-import com.gui.Support.Player;
+import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -24,17 +24,16 @@ public class Main extends Application {
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
         primaryStage.getIcons().add(new Image("file:src/main/resources/com/gui/images/logo/Tux.png"));
-        show("homepage", "",null,null);
+        show("homepage", new HomeController());
     }
 
-    public static void show(String fxml, String winner, Player p0, Player p1) {
+    public static void show(String fxml, AController controller) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
         BorderPane mainLayout = null;
         try{
             mainLayout= loader.load();
-            AController controller = loader.getController();
-            controller.WinnerLabel.setText(winner);
+            loader.setController(controller);
             
             Scene scene = new Scene(mainLayout, 1280, 720);
             primaryStage.setScene(scene);
@@ -43,10 +42,7 @@ public class Main extends Application {
             primaryStage.setTitle(title);
             primaryStage.setResizable(false);
             primaryStage.show();
-        }
-        catch(Exception e){
-            System.out.println(e);
-        }
+        }catch(IOException ex){ex.printStackTrace();}
 
 
         

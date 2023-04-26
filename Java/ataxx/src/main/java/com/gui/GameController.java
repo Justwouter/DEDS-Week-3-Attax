@@ -59,10 +59,12 @@ public class GameController extends AController implements Initializable {
     public final Paint CloneRadius = Color.rgb(255, 255, 0);
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
 
-    public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Wouter", player0Color, false);
-    public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, true);
-
-    public GameController() {
+    // public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Wouter", player0Color, false);
+    // public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, player2isbot);
+    public GameController(){}
+    public GameController(Player p0, Player p1) {
+        player0 = p0;
+        player1 = p1;
     }
 
     // ===============Setup==========================
@@ -161,7 +163,7 @@ public class GameController extends AController implements Initializable {
 
             switchPlayer();
             if (!gameEnded && getCurrentPlayer().IsBot()) {
-                // pause(1); Doesn't work b/c the UI doesn't update until the onclick is done.
+                // pause(1); //Doesn't work b/c the UI doesn't update until the onclick is done.
                 doBotMove();
 
                 updateScoreboard(); 
@@ -297,12 +299,20 @@ public class GameController extends AController implements Initializable {
     // ===============Win conditions==========================
     public boolean checkGameEnding() {
         if (checkBoardFull()) {
+
             Player player = getPlayerwithMostPoints();
-            Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!",null,null);
+            WinnerController controller = new WinnerController(player.getName() + " Wins with " + player.getGamePoints() + " points!");
+
+            Main.show("WinnerPage", controller);
+
             return true;
         } else if (!checkNextPlayerHasMoves()) {
+
             Player player = getCurrentPlayer();
-            Main.show("WinnerPage", player.getName() + " Wins by technical knockout!",null,null);
+            WinnerController controller = new WinnerController(player.getName() + " Wins by technical knockout!");
+
+            Main.show("WinnerPage", controller);
+
             return true;
         }
         return false;
@@ -517,6 +527,6 @@ public class GameController extends AController implements Initializable {
     }
     // ===============Control button functionality==========================
     public void ResetGame() {
-        Main.show("game", "",null,null);
+        Main.show("game",new GameController(player0, player1));
     }
 }

@@ -11,7 +11,7 @@ public class Player {
     boolean isBot;
     int totalPointsInCurrentGame;
     //Add statcounters here or smth
-
+    public Player(){}
     public Player(Shape icon, String name, Paint color, Boolean isBot){
         this.icon = icon;
         this.name = name;
