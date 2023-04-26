@@ -29,7 +29,7 @@ jobs:
         cache: maven
     - name: Test with Maven
       run: |
-        cd /java/ataxx
+        cd java/ataxx
         mvn test
     - name: Build with Maven
       run: mvn -B package --file pom.xml
