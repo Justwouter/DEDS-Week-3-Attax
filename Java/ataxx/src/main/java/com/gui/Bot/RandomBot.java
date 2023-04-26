@@ -9,7 +9,6 @@ import com.shared.Cord;
 import javafx.util.Pair;
 
 public class RandomBot extends ARobot {
-    GameController controller;
 
     public RandomBot(GameController controller) {
         this.controller = controller;

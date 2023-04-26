@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.shared.Cord;
 import com.shared.Stack;
 import com.gui.Bot.ARobot;
+import com.gui.Bot.AggressiveBot;
 import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
 
@@ -265,7 +266,7 @@ public class GameController extends AController implements Initializable {
 
     // ===============Bot Movement Code==========================
     public void doBotMove(){
-        ARobot bot = new RandomBot(this);
+        ARobot bot = new AggressiveBot(this);
         Pair<Cord,Cord> move= bot.getMoveCords();
         Cord from = move.getKey();
         Cord to = move.getValue();
