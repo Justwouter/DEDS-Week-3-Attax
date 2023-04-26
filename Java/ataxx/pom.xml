@@ -40,6 +40,13 @@
             <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
+        <!-- So.. the surefire plugin by default doesn't run tests with the Junit engine -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <!--https://github.com/TestFX/TestFX/#features -->
             <groupId>org.testfx</groupId>
