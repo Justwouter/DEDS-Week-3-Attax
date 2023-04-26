@@ -11,11 +11,14 @@ import com.gui.Bot.AggressiveBot;
 import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -23,6 +26,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 public class GameController extends AController implements Initializable {
@@ -35,6 +39,12 @@ public class GameController extends AController implements Initializable {
 
     @FXML
     private GridPane ScoreBoard;
+
+    @FXML
+    private Button UndoButton;
+    private boolean canPressButton = true;
+    private Timeline timeline;
+
 
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
     public boolean moveMenuOpen = false;
@@ -62,6 +72,7 @@ public class GameController extends AController implements Initializable {
         setStartingPositions();
         updateScoreboard();
         takeSnapshot();
+        setupButtonTimeout();
     }
 
     public void fillBoard() {
@@ -116,7 +127,6 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Gameplay loop==========================
-
     public void ClickHandler(Shape button, Event e) {
         // Don't know how to implement an actual gameplay loop in jfx
         // So janky onclicks will have to do.
@@ -151,7 +161,7 @@ public class GameController extends AController implements Initializable {
 
             switchPlayer();
             if (!gameEnded && getCurrentPlayer().IsBot()) {
-                // do bot stuff
+                // pause(1); Doesn't work b/c the UI doesn't update until the onclick is done.
                 doBotMove();
 
                 updateScoreboard(); 
@@ -284,18 +294,15 @@ public class GameController extends AController implements Initializable {
 
     }
 
-    public boolean isJumpMove(Cord from, Cord to){
-        return !(Math.abs(from.getHorizontal() - to.getHorizontal()) < 2 && Math.abs(from.getVertical() - to.getVertical()) < 2);
-    }
     // ===============Win conditions==========================
     public boolean checkGameEnding() {
         if (checkBoardFull()) {
             Player player = getPlayerwithMostPoints();
-            Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!");
+            Main.show("WinnerPage", player.getName() + " Wins with " + player.getGamePoints() + " points!",null,null);
             return true;
         } else if (!checkNextPlayerHasMoves()) {
             Player player = getCurrentPlayer();
-            Main.show("WinnerPage", player.getName() + " Wins by technical knockout!");
+            Main.show("WinnerPage", player.getName() + " Wins by technical knockout!",null,null);
             return true;
         }
         return false;
@@ -380,6 +387,7 @@ public class GameController extends AController implements Initializable {
             
         } catch (StackOverflowError e) {
             System.out.println("Stack Empty!");
+            return;
         }
         if (storage != null) {
             clearBoard();
@@ -401,7 +409,22 @@ public class GameController extends AController implements Initializable {
             takeSnapshot(); // Retake the snapshot as if the turn has already happend
         }
     }
+    
+    public void setupButtonTimeout(){
+        //Undo button errors when spammed. To avoid this, add a 1.5 sec delay to undo's
+        timeline = new Timeline();
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.5), event -> {canPressButton = true;}));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
 
+    public void handleUndoButton(){
+        if (canPressButton) {
+            canPressButton = false;
+            loadSnapshot();
+        }
+
+    }
     // ===============Scoreboard==========================
     public void updateScoreboard() {
         updatePlayerScores();
@@ -465,14 +488,35 @@ public class GameController extends AController implements Initializable {
         return button.isVisible() && (button.getFill() == JumpRadius || button.getFill() == CloneRadius);
     }
 
+    public boolean isJumpMove(Cord from, Cord to){
+        return !(Math.abs(from.getHorizontal() - to.getHorizontal()) < 2 && Math.abs(from.getVertical() - to.getVertical()) < 2);
+    }
+
     public void clearButton(Shape button) {
         button.setFill(Color.rgb(0, 0, 0));
         button.setVisible(false);
         button.setDisable(true);
     }
 
+    public void pause(int timeInSeconds) {
+        //JavaFX is annoying  with UI threads so make a new one and pause that
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(timeInSeconds*1000); 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     // ===============Control button functionality==========================
     public void ResetGame() {
-        Main.show("game", "");
+        Main.show("game", "",null,null);
     }
 }

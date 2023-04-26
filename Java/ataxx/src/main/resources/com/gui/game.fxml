@@ -34,8 +34,8 @@
                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="65.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Ellipse fx:id="PlayerIndicator" fill="DODGERBLUE" layoutX="53.0" layoutY="283.0" radiusX="19.0" radiusY="18.0" stroke="BLACK" strokeType="INSIDE" />
             <Label layoutX="30.0" layoutY="248.0" text="Current trun" />
+            <Ellipse fx:id="PlayerIndicator" fill="DODGERBLUE" layoutX="53.0" layoutY="283.0" radiusX="19.0" radiusY="18.0" stroke="BLACK" strokeType="INSIDE" />
             <GridPane fx:id="ScoreBoard" layoutX="14.0" layoutY="356.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,6 +59,6 @@
       </Button>
    </bottom>
    <center>
-      <Button mnemonicParsing="false" onAction="#loadSnapshot" text="Undo" BorderPane.alignment="CENTER" />
+      <Button fx:id="UndoButton" disable="${timeline.running}" mnemonicParsing="false" onAction="#handleUndoButton" text="Undo" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

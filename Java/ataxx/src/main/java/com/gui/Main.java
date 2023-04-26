@@ -1,5 +1,7 @@
 package com.gui;
 
+import com.gui.Support.Player;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,10 +24,10 @@ public class Main extends Application {
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
         primaryStage.getIcons().add(new Image("file:src/main/resources/com/gui/images/logo/Tux.png"));
-        show("homepage", "");
+        show("homepage", "",null,null);
     }
 
-    public static void show(String fxml, String winner) {
+    public static void show(String fxml, String winner, Player p0, Player p1) {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(Main.class.getResource(fxml + ".fxml"));
         BorderPane mainLayout = null;

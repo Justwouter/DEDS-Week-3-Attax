@@ -7,10 +7,10 @@ public class HomeController extends AController{
 
     @FXML
     private void switchToGame() throws IOException {
-        Main.show("game", "");
+        Main.show("game", "",null,null);
     }
     @FXML
     private void switchToGameWithBot() throws IOException {
-        Main.show("game", "");
+        Main.show("game", "",null,null);
     }
 }
