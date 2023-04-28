@@ -31,6 +31,9 @@ import javafx.util.Pair;
 
 public class GameController extends AController implements Initializable {
 
+    //Collapse all ctr+k ctr+0
+    //ctrl+k ctrl+s for settings
+
     @FXML
     private GridPane GameBoard;
 
@@ -42,7 +45,7 @@ public class GameController extends AController implements Initializable {
 
     @FXML
     private Button UndoButton;
-    private boolean canPressButton = true;
+    private boolean canPressUndoButton = true;
     private Timeline timeline;
 
 
@@ -137,13 +140,19 @@ public class GameController extends AController implements Initializable {
 
         // Player clicking own piece
         if (button.getFill() == player.getPlayerColor()) {
-            if (moveMenuOpen) {
+            if(moveMenuOpen && button == fromButton){
                 closePlayerMovementMenu();
             }
-            if (!player.IsBot()) {
-                openPlayerMovementMenu(button);
-                fromButton = button;
+            else{
+                if (moveMenuOpen) {
+                    closePlayerMovementMenu();
+                }
+                if (!player.IsBot()) {
+                    openPlayerMovementMenu(button);
+                    fromButton = button;
+                }
             }
+           
         }
 
         // Player clicking piece in movement menu
@@ -423,14 +432,14 @@ public class GameController extends AController implements Initializable {
     public void setupButtonTimeout(){
         //Undo button errors when spammed. To avoid this, add a 1.5 sec delay to undo's
         timeline = new Timeline();
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.5), event -> {canPressButton = true;}));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1.5), event -> {canPressUndoButton = true;}));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
     public void handleUndoButton(){
-        if (canPressButton) {
-            canPressButton = false;
+        if (canPressUndoButton) {
+            canPressUndoButton = false;
             loadSnapshot();
         }
 
@@ -453,7 +462,9 @@ public class GameController extends AController implements Initializable {
         }
         for (int i = 0; i <= ScoreStack.length(); i++) {
             Player player = ScoreStack.pop().getData();
-            ScoreBoard.add(new Text(player.getName()), 1, i);
+            Text playername = new Text(player.getName());
+            playername.setFill(player.getPlayerColor());
+            ScoreBoard.add(playername, 1, i);
             ScoreBoard.add(new Text("" + player.getGamePoints()), 2, i);
         }
 
