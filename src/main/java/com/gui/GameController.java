@@ -10,7 +10,7 @@ import com.gui.Bot.ARobot;
 import com.gui.Bot.AggressiveBot;
 import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
-import com.gui.Support.GameloopTimer;
+import com.gui.Support.AGameloopTimer;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -49,7 +49,7 @@ public class GameController extends AController implements Initializable {
     private boolean canPressUndoButton = true;
     private Timeline timeline;
 
-    private GameloopTimer GameplayLoop;
+    private AGameloopTimer GameplayLoop;
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
     private boolean playerDidMove = false;
     public boolean moveMenuOpen = false;
@@ -80,7 +80,7 @@ public class GameController extends AController implements Initializable {
         updateScoreboard();
         takeSnapshot();
         setupButtonTimeout();
-        GameloopTimer timer = new GameloopTimer() {
+        AGameloopTimer timer = new AGameloopTimer() {
             @Override
             public void tick(float secondsSinceLastFrame) {
                 updatePlayers(this);
@@ -113,7 +113,7 @@ public class GameController extends AController implements Initializable {
                 Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
                 // Button rules
                 piece.setVisible(false);
-                piece.setOnMouseClicked(e -> ClickHandler(piece, e));
+                piece.setOnMouseClicked(e -> PlayerTurnClickHandler(piece, e));
 
                 GridPane.setHalignment(piece, HPos.CENTER);
                 Board[verticalIndex][horizontalIndex] = piece;
@@ -141,7 +141,7 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Gameplay loop==========================
-    public void updatePlayers(GameloopTimer timer) {
+    public void updatePlayers(AGameloopTimer timer) {
         if (getCurrentPlayer().IsBot()) {
             timer.stop();
             doBotMove();
@@ -157,7 +157,7 @@ public class GameController extends AController implements Initializable {
         }
     }
 
-    public void afterTurn(GameloopTimer timer){
+    public void afterTurn(AGameloopTimer timer){
         updateScoreboard(); 
         takeSnapshot(); 
         checkGameEnding(timer);
@@ -165,7 +165,7 @@ public class GameController extends AController implements Initializable {
     }
 
 
-    public void ClickHandler(Shape button, Event e) {
+    public void PlayerTurnClickHandler(Shape button, Event e) {
         Player player = getCurrentPlayer();
         // Player clicking own piece 
         if (button.getFill() == player.getPlayerColor()) {
@@ -323,7 +323,7 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Win conditions==========================
-    public boolean checkGameEnding(GameloopTimer timer) {
+    public boolean checkGameEnding(AGameloopTimer timer) {
         if (checkBoardFull()) {
             timer.stop();
             Player player = getPlayerwithMostPoints();

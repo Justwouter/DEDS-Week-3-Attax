@@ -5,7 +5,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
 
-public abstract class GameloopTimer extends AnimationTimer {
+public abstract class AGameloopTimer extends AnimationTimer {
 
     long pauseStart;
     long animationStart;
