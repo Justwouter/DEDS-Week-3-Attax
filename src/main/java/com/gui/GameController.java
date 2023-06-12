@@ -10,6 +10,7 @@ import com.gui.Bot.ARobot;
 import com.gui.Bot.AggressiveBot;
 import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
+import com.gui.Support.GameloopTimer;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -48,8 +49,9 @@ public class GameController extends AController implements Initializable {
     private boolean canPressUndoButton = true;
     private Timeline timeline;
 
-
+    private GameloopTimer GameplayLoop;
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
+    private boolean playerDidMove = false;
     public boolean moveMenuOpen = false;
     public Shape fromButton;
 
@@ -78,6 +80,13 @@ public class GameController extends AController implements Initializable {
         updateScoreboard();
         takeSnapshot();
         setupButtonTimeout();
+        GameloopTimer timer = new GameloopTimer() {
+            @Override
+            public void tick(float secondsSinceLastFrame) {
+                updatePlayers(this);
+            }
+        };
+        timer.start();
     }
 
     public void fillBoard() {
@@ -132,13 +141,33 @@ public class GameController extends AController implements Initializable {
     }
 
     // ===============Gameplay loop==========================
-    public void ClickHandler(Shape button, Event e) {
-        // Don't know how to implement an actual gameplay loop in jfx
-        // So janky onclicks will have to do.
-        // Downside is that you can't play bot vs bot & the player needs to start.
-        Player player = getCurrentPlayer();
+    public void updatePlayers(GameloopTimer timer) {
+        if (getCurrentPlayer().IsBot()) {
+            timer.stop();
+            doBotMove();
+            timer.start();
+            afterTurn(timer);
+        }
+        else{
+            if(playerDidMove){
+                afterTurn(timer);
+                playerDidMove = false;
 
-        // Player clicking own piece
+            }
+        }
+    }
+
+    public void afterTurn(GameloopTimer timer){
+        updateScoreboard(); 
+        takeSnapshot(); 
+        checkGameEnding(timer);
+        switchPlayer();
+    }
+
+
+    public void ClickHandler(Shape button, Event e) {
+        Player player = getCurrentPlayer();
+        // Player clicking own piece 
         if (button.getFill() == player.getPlayerColor()) {
             if(moveMenuOpen && button == fromButton){
                 closePlayerMovementMenu();
@@ -166,20 +195,7 @@ public class GameController extends AController implements Initializable {
 
             closePlayerMovementMenu(); // Hide valid move assistent
             infectEnemyButtons(findButtonIndex(button)); // Recolor adjecent pieces
-            updateScoreboard(); // Update scoreboard on the side
-            takeSnapshot(); // push new state to stack
-            Boolean gameEnded = checkGameEnding();
-
-            switchPlayer();
-            if (!gameEnded && getCurrentPlayer().IsBot()) {
-                // pause(1); //Doesn't work b/c the UI doesn't update until the onclick is done.
-                doBotMove();
-
-                updateScoreboard(); 
-                takeSnapshot(); 
-                checkGameEnding();
-                switchPlayer();
-            }
+            playerDidMove = true;
         }
     }
 
@@ -302,26 +318,23 @@ public class GameController extends AController implements Initializable {
         toButton.setVisible(true);
 
         infectEnemyButtons(to);
+        playerDidMove = false;
 
     }
 
     // ===============Win conditions==========================
-    public boolean checkGameEnding() {
+    public boolean checkGameEnding(GameloopTimer timer) {
         if (checkBoardFull()) {
-
+            timer.stop();
             Player player = getPlayerwithMostPoints();
             WinnerController controller = new WinnerController(player.getName() + " Wins with " + player.getGamePoints() + " points!");
-
             Main.show("WinnerPage", controller);
-
             return true;
         } else if (!checkNextPlayerHasMoves()) {
-
+            timer.stop();
             Player player = getCurrentPlayer();
             WinnerController controller = new WinnerController(player.getName() + " Wins by technical knockout!");
-
             Main.show("WinnerPage", controller);
-
             return true;
         }
         return false;
