@@ -17,6 +17,7 @@
             <Button fx:id="HomePageEnter" layoutX="601.0" layoutY="327.0" text="Start Game!" textAlignment="CENTER" />
             <Label layoutX="347.0" layoutY="282.0" text="Player 1" />
             <TextField fx:id="Player0Name" layoutX="294.0" layoutY="327.0" promptText="Insert Player Name" />
+            <CheckBox fx:id="Player0BotCheck" layoutX="325.0" layoutY="369.0" mnemonicParsing="false" text="Bot?" textAlignment="CENTER" />
             <Label layoutX="901.0" layoutY="282.0" text="Player 2" />
             <TextField fx:id="Player1Name" layoutX="848.0" layoutY="327.0" promptText="Insert Player Name" />
             <CheckBox fx:id="Player1BotCheck" layoutX="886.0" layoutY="369.0" mnemonicParsing="false" text="Bot?" textAlignment="CENTER" />
