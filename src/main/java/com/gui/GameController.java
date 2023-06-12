@@ -49,7 +49,6 @@ public class GameController extends AController implements Initializable {
     private boolean canPressUndoButton = true;
     private Timeline timeline;
 
-    private AGameloopTimer GameplayLoop;
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
     private boolean playerDidMove = false;
     public boolean moveMenuOpen = false;
@@ -64,8 +63,6 @@ public class GameController extends AController implements Initializable {
     public final Paint CloneRadius = Color.rgb(255, 255, 0);
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
 
-    // public final Player player0 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Wouter", player0Color, false);
-    // public final Player player1 = new Player(new Ellipse(53.0, 283.0, 19.0, 18.0), "Marieke", player1Color, player2isbot);
     public GameController(){}
     public GameController(Player p0, Player p1) {
         player0 = p0;
@@ -166,10 +163,15 @@ public class GameController extends AController implements Initializable {
     }
 
 
+    
+    
+    //#region ===============Player Movement code==========================
+
     public void PlayerTurnClickHandler(Shape button, Event e) {
         Player player = getCurrentPlayer();
         // Player clicking own piece 
         if (button.getFill() == player.getPlayerColor()) {
+             //Player pressed same button twice
             if(moveMenuOpen && button == fromButton){
                 closePlayerMovementMenu();
             }
@@ -184,7 +186,6 @@ public class GameController extends AController implements Initializable {
             }
            
         }
-
         // Player clicking piece in movement menu
         else if (isButtonInMovementMenu(button)) {
             if (button.getFill() == JumpRadius) {
@@ -196,11 +197,11 @@ public class GameController extends AController implements Initializable {
 
             closePlayerMovementMenu(); // Hide valid move assistent
             infectEnemyButtons(findButtonIndex(button)); // Recolor adjecent pieces
-            playerDidMove = true;
+            playerDidMove = true; //Update gameplay loop
         }
     }
+    
 
-    // ===============Player Movement code==========================
     public void activatePlayerButtons(Player player) {
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
@@ -302,7 +303,9 @@ public class GameController extends AController implements Initializable {
 
     }
 
-    // ===============Bot Movement Code==========================
+    //#endregion
+
+    //#region ===============Bot Movement Code==========================
     public void doBotMove(){
         ARobot bot = new AggressiveBot(this);
         Pair<Cord,Cord> move= bot.getMoveCords();
@@ -323,7 +326,9 @@ public class GameController extends AController implements Initializable {
 
     }
 
-    // ===============Win conditions==========================
+    //#endregion
+
+    //#region ===============Win conditions==========================
     public boolean checkGameEnding(AGameloopTimer timer) {
         if (checkBoardFull()) {
             timer.stop();
@@ -339,7 +344,6 @@ public class GameController extends AController implements Initializable {
             return true;
         }
         return false;
-
     }
 
     public boolean checkNextPlayerHasMoves() {
@@ -396,7 +400,9 @@ public class GameController extends AController implements Initializable {
         return player1;
     }
 
-    // ===============States & Undo==========================
+    //#endregion
+
+    //#region ===============States & Undo==========================
     public void takeSnapshot() {
         Shape[][] storage = new Shape[boardsize][boardsize];
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
@@ -458,7 +464,10 @@ public class GameController extends AController implements Initializable {
         }
 
     }
-    // ===============Scoreboard==========================
+
+    //#endregion
+
+    //#region ===============Scoreboard==========================
     public void updateScoreboard() {
         updatePlayerScores();
 
@@ -489,7 +498,9 @@ public class GameController extends AController implements Initializable {
         getOtherPlayer().setGamePoints(findPlayerPieces(getOtherPlayer()).size());
     }
 
-    // ===============Helpers==========================
+    //#endregion
+
+    //#region ===============Helpers==========================
     public void clearBoard() {
         for (int i = 1; i < GameBoard.getChildren().size(); i++) {
             GameBoard.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && !(node instanceof Label));
@@ -537,7 +548,7 @@ public class GameController extends AController implements Initializable {
         //JavaFX is annoying  with UI threads so make a new one and pause that
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep((int)timeInSeconds*1000); 
+                Thread.sleep((int)(timeInSeconds*1000)); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -550,8 +561,12 @@ public class GameController extends AController implements Initializable {
             e.printStackTrace();
         }
     }
-    // ===============Control button functionality==========================
+    //#endregion
+
+    //#region ===============Control button functionality==========================
     public void ResetGame() {
         Main.show("game",new GameController(player0, player1));
     }
+
+    //#endregion
 }
