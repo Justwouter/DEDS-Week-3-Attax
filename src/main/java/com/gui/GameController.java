@@ -8,6 +8,7 @@ import com.shared.Cord;
 import com.shared.Stack;
 import com.gui.Bot.ARobot;
 import com.gui.Bot.AggressiveBot;
+import com.gui.Bot.NegamaxBot;
 import com.gui.Bot.RandomBot;
 import com.gui.Support.Player;
 import com.gui.Support.AGameloopTimer;
@@ -141,7 +142,7 @@ public class GameController extends AController implements Initializable {
     public void updatePlayers(AGameloopTimer timer) {
         if (getCurrentPlayer().IsBot()) {
             timer.stop();
-            pause(0.5);
+            // pause(0.5);
             doBotMove();
             timer.start();
             afterTurn(timer);
@@ -307,7 +308,7 @@ public class GameController extends AController implements Initializable {
 
     //#region ===============Bot Movement Code==========================
     public void doBotMove(){
-        ARobot bot = new AggressiveBot(this);
+        ARobot bot = new NegamaxBot(this);
         Pair<Cord,Cord> move= bot.getMoveCords();
         Cord from = move.getKey();
         Cord to = move.getValue();
@@ -501,6 +502,11 @@ public class GameController extends AController implements Initializable {
     //#endregion
 
     //#region ===============Helpers==========================
+
+    public Shape[][] getBoard(){
+        return this.Board;
+    }
+
     public void clearBoard() {
         for (int i = 1; i < GameBoard.getChildren().size(); i++) {
             GameBoard.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && !(node instanceof Label));
