@@ -144,6 +144,7 @@ public class GameController extends AController implements Initializable {
     public void updatePlayers(AGameloopTimer timer) {
         if (getCurrentPlayer().IsBot()) {
             timer.stop();
+            pause(0.5);
             doBotMove();
             timer.start();
             afterTurn(timer);
@@ -532,11 +533,11 @@ public class GameController extends AController implements Initializable {
         button.setDisable(true);
     }
 
-    public void pause(int timeInSeconds) {
+    public void pause(Double timeInSeconds) {
         //JavaFX is annoying  with UI threads so make a new one and pause that
         Thread thread = new Thread(() -> {
             try {
-                Thread.sleep(timeInSeconds*1000); 
+                Thread.sleep((int)timeInSeconds*1000); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
