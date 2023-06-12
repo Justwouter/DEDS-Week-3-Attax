@@ -16,16 +16,18 @@ import javafx.util.Pair;
 public class AggressiveBot extends ARobot {
 
     public AggressiveBot(GameController controller) {
-        this.controller = controller;
+        super(controller);
     }
 
     @Override
     public Pair<Cord, Cord> getMoveCords() {
+        // Find all pieces of the player currently at turn.
         ArrayList<Cord> possibleStarts = controller.findPlayerPieces(controller.getCurrentPlayer());
 
         int bestScore = 0;
         ArrayList<Pair<Cord, Cord>> bestTargets = new ArrayList<>();
 
+        // For each found piece, calculate possible moves and evaluate them based on the amount of pieces captured by the move.
         for (Cord from : possibleStarts) {
             for (Cord to : getTargets(from)) {
                 int score = evaluateMove(to);
@@ -39,11 +41,16 @@ public class AggressiveBot extends ARobot {
                 }
             }
         }
+        //If multiple moves gain the same amount of pieces, pick one at "random".
         Pair<Cord,Cord> bestmove = bestTargets.get(new Random().nextInt(bestTargets.size()));
         return bestmove;
     }
 
-
+    /**
+     * Find all valid moves for a specified piece.
+     * @param index Cord object containing the starting piece.
+     * @return Arraylist of Cords with every possible move
+     */
     private ArrayList<Cord> getTargets(Cord index) {
         ArrayList<Cord> possibleMoves = new ArrayList<>();
         for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
@@ -60,6 +67,11 @@ public class AggressiveBot extends ARobot {
         return possibleMoves;
     }
 
+    /**
+     * Calculates the amount of pieces converted by a move.
+     * @param index Cord object containing the desired target.
+     * @return Amount of pieces captured with move.
+     */
     private int evaluateMove(Cord index) {
         int counter = 0;
         for (int horizontalIndex = index.getHorizontal() - 1; horizontalIndex <= index.getHorizontal()
@@ -76,5 +88,4 @@ public class AggressiveBot extends ARobot {
         return counter;
 
     }
-
 }

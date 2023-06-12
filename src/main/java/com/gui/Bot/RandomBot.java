@@ -11,7 +11,7 @@ import javafx.util.Pair;
 public class RandomBot extends ARobot {
 
     public RandomBot(GameController controller) {
-        this.controller = controller;
+        super(controller);
     }
 
     @Override
