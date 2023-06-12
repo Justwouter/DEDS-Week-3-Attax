@@ -430,7 +430,7 @@ public class GameController extends AController implements Initializable {
                     newButton.setFill(button.getFill());
                     newButton.setVisible(button.isVisible());
                     newButton.setDisable(button.isDisabled());
-                    newButton.setOnMouseClicked(e -> ClickHandler(newButton, e));
+                    newButton.setOnMouseClicked(e -> PlayerTurnClickHandler(newButton, e));
                     Board[verticalIndex][horizontalIndex] = newButton;
                     GridPane.setHalignment(newButton, HPos.CENTER);
                     GameBoard.add(newButton, verticalIndex, horizontalIndex);
