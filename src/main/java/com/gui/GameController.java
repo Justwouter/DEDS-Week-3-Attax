@@ -2,6 +2,7 @@ package com.gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.shared.Cord;
@@ -58,6 +59,9 @@ public class GameController extends AController implements Initializable {
     public Shape[][] Board;
     Stack<Shape[][]> stateStack = new Stack<>();
 
+    private Player player0;
+    private Player player1;
+
     public final int boardsize = 7;
     public final Paint player0Color = Color.rgb(30, 144, 255);
     public final Paint player1Color = Color.rgb(255, 0, 0);
@@ -65,19 +69,10 @@ public class GameController extends AController implements Initializable {
     public final Paint JumpRadius = Color.rgb(255, 165, 0);
 
     public GameController(){}
-    public GameController(Player p0, Player p1) {
-        player0 = p0;
-        player1 = p1;
-    }
 
-    // ===============Setup==========================
+    //#region ===============Setup==========================
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        fillBoard();
-        setStartingPositions();
-        updateScoreboard();
-        takeSnapshot();
-        setupButtonTimeout();
         AGameloopTimer timer = new AGameloopTimer() {
             @Override
             public void tick(float secondsSinceLastFrame) {
@@ -87,8 +82,21 @@ public class GameController extends AController implements Initializable {
         timer.start();
     }
 
+    @Override
+    public void loadData(Map<String, Object> dataDict) {
+        this.dataDict = dataDict;
+        this.player0 = (Player) dataDict.get("Player0");
+        this.player1 = (Player) dataDict.get("Player1");
+        fillBoard();
+        setStartingPositions();
+        updateScoreboard();
+        takeSnapshot();
+        setupButtonTimeout();
+    }
+
     public void fillBoard() {
         clearBoard();
+
         Board = new Shape[boardsize][boardsize];
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
 
@@ -138,7 +146,9 @@ public class GameController extends AController implements Initializable {
         }
     }
 
-    // ===============Gameplay loop==========================
+    //#endregion
+
+    //#region ===============Gameplay loop==========================
     public void updatePlayers(AGameloopTimer timer) {
         if (getCurrentPlayer().IsBot()) {
             timer.stop();
@@ -163,6 +173,7 @@ public class GameController extends AController implements Initializable {
         switchPlayer();
     }
 
+    //#endregion
 
     
     
@@ -334,14 +345,14 @@ public class GameController extends AController implements Initializable {
         if (checkBoardFull()) {
             timer.stop();
             Player player = getPlayerwithMostPoints();
-            WinnerController controller = new WinnerController(player.getName() + " Wins with " + player.getGamePoints() + " points!");
-            Main.show("WinnerPage", controller);
+            dataDict.put("VictoryText", player.getName() + " Wins with " + player.getGamePoints() + " points!");
+            Main.show("WinnerPage", this.dataDict);
             return true;
         } else if (!checkNextPlayerHasMoves()) {
             timer.stop();
             Player player = getCurrentPlayer();
-            WinnerController controller = new WinnerController(player.getName() + " Wins by technical knockout!");
-            Main.show("WinnerPage", controller);
+            dataDict.put("VictoryText",player.getName() + " Wins by technical knockout!");
+            Main.show("WinnerPage", dataDict);
             return true;
         }
         return false;
@@ -571,8 +582,7 @@ public class GameController extends AController implements Initializable {
 
     //#region ===============Control button functionality==========================
     public void ResetGame() {
-        Main.show("game",new GameController(player0, player1));
+        Main.show("game",this.dataDict);
     }
-
     //#endregion
 }
