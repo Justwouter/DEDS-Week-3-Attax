@@ -1,5 +1,7 @@
 package com.gui.Support;
 
+import com.gui.Bot.ARobot;
+
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
 
@@ -8,19 +10,22 @@ public class Player {
     String name;
     int id;
     Paint playerColor;
-    boolean isBot;
+    ARobot bot;
     int totalPointsInCurrentGame;
     //Add statcounters here or smth
     public Player(){}
-    public Player(Shape icon, String name, Paint color, Boolean isBot){
+    public Player(Shape icon, String name, Paint color, ARobot bot){
         this.icon = icon;
         this.name = name;
         this.playerColor = color;
-        this.isBot = isBot;
+        this.bot = bot;
     }
 
     public boolean IsBot() {
-        return this.isBot;
+        return this.bot !=null;
+    }
+    public ARobot getBot(){
+        return bot;
     }
 
     public Shape getIcon() {

@@ -32,5 +32,4 @@ public class WinnerController extends AController{
         MainPane.setTop(winLabel);
         BorderPane.setAlignment(winLabel, Pos.CENTER);
     }
-    
 }

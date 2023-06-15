@@ -13,6 +13,7 @@ public class NegamaxBot extends ARobot {
 
     private static final int MAX_DEPTH = 6;
 
+    public NegamaxBot(){super();}
     public NegamaxBot(GameController controller) {
         super(controller);
     }

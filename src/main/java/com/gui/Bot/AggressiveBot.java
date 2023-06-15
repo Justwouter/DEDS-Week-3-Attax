@@ -15,6 +15,7 @@ import javafx.util.Pair;
  */
 public class AggressiveBot extends ARobot {
 
+    public AggressiveBot() {super();}
     public AggressiveBot(GameController controller) {
         super(controller);
     }

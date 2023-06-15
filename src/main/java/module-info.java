@@ -10,6 +10,6 @@ module com.ataxx {
     opens com.shared;
     exports com.gui;
     exports com.gui.Support;
+    exports com.gui.Bot;
     exports com.shared;
-
 }

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 
 public class TestStack{
-    //TODO Better test plan
     Stack<Object> testStack = new Stack<>();
 
     @BeforeEach

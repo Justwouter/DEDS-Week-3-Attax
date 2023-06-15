@@ -10,40 +10,37 @@ import javafx.util.Pair;
 
 public class RandomBot extends ARobot {
 
+    public RandomBot(){super();}
     public RandomBot(GameController controller) {
         super(controller);
     }
 
     @Override
     public Pair<Cord, Cord> getMoveCords() {
-        
-        Cord from = getRandomFrom();
-        Cord to = getRandomTo(from);
-        return new Pair<Cord, Cord>(from, to);
-    
-
+        ArrayList<Cord> from = getRandomFrom();
+        return getRandomTo(from);
     }
 
-    private Cord getRandomFrom() {
+    private ArrayList<Cord> getRandomFrom() {
         ArrayList<Cord> cords = controller.findPlayerPieces(controller.getCurrentPlayer());
-        return cords.get(new Random().nextInt(cords.size()));
+        return cords;
     }
 
-    private Cord getRandomTo(Cord index) {
-        ArrayList<Cord> possibleMoves = new ArrayList<>();
-        for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
-                + 2; horizontalIndex++) {
-            for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
-                    + 2; verticalIndex++) {
-                if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
-                    if (!controller.Board[verticalIndex][horizontalIndex].isVisible()) {
-                        possibleMoves.add(new Cord(verticalIndex, horizontalIndex));
+    private Pair<Cord,Cord> getRandomTo(ArrayList<Cord> indexList) {
+        ArrayList<Pair<Cord,Cord>> possibleMoves = new ArrayList<>();
+        for(Cord index : indexList){
+            for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
+                    + 2; horizontalIndex++) {
+                for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
+                        + 2; verticalIndex++) {
+                    if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
+                        if (!controller.Board[verticalIndex][horizontalIndex].isVisible()) {
+                            possibleMoves.add(new Pair<Cord,Cord>(index, new Cord(verticalIndex, horizontalIndex)));
+                        }
                     }
                 }
             }
         }
-
         return possibleMoves.get(new Random().nextInt(possibleMoves.size()));
-
     }
 }

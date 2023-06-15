@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gui.Bot.ARobot;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,7 +27,11 @@ public class Main extends Application {
     public void start(Stage ps) throws Exception {
         primaryStage = ps;
         primaryStage.getIcons().add(new Image("file:src/main/resources/com/gui/images/logo/Tux.png"));
-        show("homepage", new HashMap<>());
+        
+        HashMap<String,Object> dataDict = new HashMap<>();
+        dataDict.put("Botlist", new HashMap<String,ARobot>());
+        
+        show("homepage", dataDict);
     }
 
     public static void show(String fxml, Map<String,Object> dataDict) {
