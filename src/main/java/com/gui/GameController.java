@@ -19,14 +19,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -66,7 +69,7 @@ public class GameController extends AController implements Initializable {
     private Player player0;
     private Player player1;
 
-    public final int boardsize = 7;
+    public int boardsize;
     private final Paint CloneRadius = Color.rgb(255, 255, 0);
     private final Paint JumpRadius = Color.rgb(255, 165, 0);
 
@@ -88,9 +91,11 @@ public class GameController extends AController implements Initializable {
     @Override
     public void loadData(Map<String, Object> dataDict) {
         this.dataDict = dataDict;
+        this.boardsize = (int) dataDict.get("BoardSize");
         this.player0 = (Player) dataDict.get("Player0");
         this.player1 = (Player) dataDict.get("Player1");
         this.musicPlayer = startMusic(Main.class.getResource("music/battle.mp3").getFile());
+        GameBoard = makeBoard(GameBoard, "");
         GameBoard = colorBoard(GameBoard,boardsize);
         fillBoard();
         setStartingPositions();
@@ -110,6 +115,25 @@ public class GameController extends AController implements Initializable {
         });
         musicPlayer.setAutoPlay(true);
         return musicPlayer;
+    }
+
+    private GridPane makeBoard(GridPane gp, String styleArgs){
+        gp.getColumnConstraints().clear();
+        gp.getRowConstraints().clear();
+        gp.setAlignment(Pos.CENTER);
+
+        gp.setStyle(styleArgs);
+
+        ColumnConstraints cc = new ColumnConstraints();
+        RowConstraints rc = new RowConstraints();
+
+        for (int i = 0; i < boardsize; i++) {
+            cc.setPrefWidth(100);
+            rc.setPrefHeight((100));
+            gp.getColumnConstraints().add(cc);
+            gp.getRowConstraints().add(rc);
+        }
+        return gp;
     }
 
     private void fillBoard() {

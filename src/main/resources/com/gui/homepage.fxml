@@ -4,11 +4,12 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.HomeController">
+<BorderPane fx:id="MainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.HomeController">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -22,6 +23,7 @@
             <TextField fx:id="Player1Name" layoutX="848.0" layoutY="327.0" promptText="Insert Player Name" />
             <CheckBox fx:id="Player1BotCheck" layoutX="952.0" layoutY="369.0" mnemonicParsing="false" text="Bot?" textAlignment="CENTER" />
             <ComboBox fx:id="Player1BotTypeSelector" disable="true" layoutX="848.0" layoutY="365.0" prefHeight="25.0" prefWidth="97.0" promptText="Choose a Bot" />
+            <Spinner fx:id="BoardSize" layoutX="566.0" layoutY="365.0" />
          </children>
       </AnchorPane>
    </center>

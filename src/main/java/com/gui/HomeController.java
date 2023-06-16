@@ -13,12 +13,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
 //TODO Load settings from datadict when play again is used
 public class HomeController extends AController implements Initializable {
+
+    @FXML
+    private BorderPane MainPane;
+
+    @FXML
+    private Spinner<Integer> BoardSize;
 
     @FXML
     private Button HomePageEnter;
@@ -43,10 +52,10 @@ public class HomeController extends AController implements Initializable {
 
     private HashMap<String,ARobot> Botlist = ARobot.botList;
 
-    Player player0;
-    Player player1;
+    
     ARobot player0Bottype;
     ARobot player1Bottype;
+    int boardsize = 7;
 
     @FXML
     private void switchToGame() {
@@ -57,7 +66,7 @@ public class HomeController extends AController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         setupHandlers();
-        
+        BoardSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 70,7,1));
     }
 
     private void setupHandlers() {
@@ -66,6 +75,7 @@ public class HomeController extends AController implements Initializable {
         Player1BotCheck.setOnAction(e -> handleBotCheck(Player1BotCheck));
         Player0BotTypeSelector.setOnAction(e -> handleBotChoice(Player0BotTypeSelector));
         Player1BotTypeSelector.setOnAction(e -> handleBotChoice(Player1BotTypeSelector));
+        BoardSize.valueProperty().addListener((obs, oldValue, newValue) -> handleBoardsizeChange(newValue));
     }
 
     /**
@@ -95,11 +105,18 @@ public class HomeController extends AController implements Initializable {
         }
     }
 
+    private void handleBoardsizeChange(Integer value){
+        this.boardsize = value;
+    }
+
     
     /**
      * Creates users and loads them to the shared 'database' when the startgame button is clicked.
      */
     private void makeUsers() {
+        Player player0;
+        Player player1;
+
         if (Player0Name.getText().isEmpty()) {
             Player0Name.setText("Player1");
         }
@@ -120,6 +137,7 @@ public class HomeController extends AController implements Initializable {
 
         dataDict.put("Player0", player0);
         dataDict.put("Player1", player1);
+        dataDict.put("BoardSize", this.boardsize);
     }
 
 
