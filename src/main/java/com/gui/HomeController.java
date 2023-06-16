@@ -66,7 +66,7 @@ public class HomeController extends AController implements Initializable {
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         setupHandlers();
-        BoardSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 70,7,1));
+        BoardSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 16,7,1));
     }
 
     private void setupHandlers() {

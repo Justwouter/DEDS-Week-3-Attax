@@ -142,23 +142,31 @@ public class GameController extends AController implements Initializable {
         Board = new Shape[boardsize][boardsize];
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
 
-            // Add numbers on left row
+            // Add numbers on left row, add colors if background is colored
             Label verticalLabel = new Label("" + (horizontalIndex));
             GridPane.setHalignment(verticalLabel, HPos.LEFT);
             GridPane.setValignment(verticalLabel, VPos.TOP);
+            if((horizontalIndex + 0) % 2 == 0){
+                verticalLabel.setTextFill(Color.rgb(255, 255, 255));
+            }
             GameBoard.add(verticalLabel, 0, horizontalIndex);
 
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
 
-                // Add numbers in corners on top row
+                // Add numbers in corners on top row, add colors if background is colored
                 if (verticalIndex == 0) {
                     Label horizontalLabel = new Label("" + (horizontalIndex));
                     GridPane.setHalignment(horizontalLabel, HPos.LEFT);
                     GridPane.setValignment(horizontalLabel, VPos.TOP);
+                    if((horizontalIndex + verticalIndex) % 2 == 0){
+                        horizontalLabel.setTextFill(Color.rgb(255, 255, 255));
+                    }
                     GameBoard.add(horizontalLabel, horizontalIndex, verticalIndex);
                 }
-
+                
+                // Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
                 Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
+                piece.setStyle(null);
 
                 // Button rules
                 piece.setVisible(false);
@@ -170,7 +178,6 @@ public class GameController extends AController implements Initializable {
                 GameBoard.add(piece, verticalIndex, horizontalIndex);
             }
         }
-
     }
 
     private GridPane colorBoard(GridPane gp, int boardsize){
