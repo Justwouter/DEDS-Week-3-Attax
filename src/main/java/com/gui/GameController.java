@@ -164,9 +164,7 @@ public class GameController extends AController implements Initializable {
                     GameBoard.add(horizontalLabel, horizontalIndex, verticalIndex);
                 }
                 
-                // Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
                 Shape piece = new Ellipse(53.0, 283.0, 19.0, 18.0);
-                piece.setStyle(null);
 
                 // Button rules
                 piece.setVisible(false);
