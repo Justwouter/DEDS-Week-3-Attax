@@ -1,5 +1,6 @@
 package com.gui;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,10 +18,17 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Ellipse;
@@ -52,6 +60,7 @@ public class GameController extends AController implements Initializable {
 
     private Shape[][] Board;
     private Stack<Shape[][]> stateStack = new Stack<>();
+    private MediaPlayer musicPlayer;
 
     private Player player0;
     private Player player1;
@@ -80,11 +89,20 @@ public class GameController extends AController implements Initializable {
         this.dataDict = dataDict;
         this.player0 = (Player) dataDict.get("Player0");
         this.player1 = (Player) dataDict.get("Player1");
+        GameBoard = colorBoard(GameBoard,boardsize);
         fillBoard();
         setStartingPositions();
         updateScoreboard();
         takeSnapshot();
         setupButtonTimeout();
+        startMusic();
+    }
+
+    private void startMusic(){
+        File file = new File(Main.class.getResource("music/battle.mp3").getFile());
+        Media media = new Media(file.toURI().toString());  
+        this.musicPlayer = new MediaPlayer(media);  
+        this.musicPlayer.setAutoPlay(true);  
     }
 
     private void fillBoard() {
@@ -124,6 +142,18 @@ public class GameController extends AController implements Initializable {
 
     }
 
+    private GridPane colorBoard(GridPane gp, int boardsize){
+        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                Pane backgroundPane = new Pane();
+                if((horizontalIndex + verticalIndex) % 2 == 0){
+                    backgroundPane.setBackground(new Background(new BackgroundFill(Color.rgb(70, 80, 90), CornerRadii.EMPTY, Insets.EMPTY)));
+                }
+                gp.add(backgroundPane, verticalIndex, horizontalIndex);
+            }
+        }
+        return gp;
+    }
     //TODO Once pointer madness is figured out, add support for custom icons <- Should be easy by loading them from the Player class <- No fuck you, do you know how annoying that is with replacing icons on the board instead of just using circles???
     private void setStartingPositions() {
         for (int horizontalIndex = Board.length - 2; horizontalIndex <= Board.length - 1; horizontalIndex++) {
@@ -355,7 +385,7 @@ public class GameController extends AController implements Initializable {
         //All spaces are full, win by points
         if (checkBoardFull()) {
             timer.stop();
-
+            musicPlayer.stop();
             Player player = getPlayerwithMostPoints();
             dataDict.put("VictoryText", player.getName() + " wins with " + player.getGamePoints() + " points!");
             Main.show("WinnerPage", this.dataDict);
@@ -365,7 +395,7 @@ public class GameController extends AController implements Initializable {
         // Enemy has no more moves left, win by knockout. Arguably the harder achievement
         } else if (!checkNextPlayerHasMoves()) {
             timer.stop();
-
+            musicPlayer.stop();
             Player player = getCurrentPlayer();
             dataDict.put("VictoryText",player.getName() + " wins by technical knockout!");
             Main.show("WinnerPage", dataDict);
@@ -577,7 +607,7 @@ public class GameController extends AController implements Initializable {
 
     private void clearBoard() {
         for (int i = 1; i < GameBoard.getChildren().size(); i++) {
-            GameBoard.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && !(node instanceof Label));
+            GameBoard.getChildren().removeIf(node -> GridPane.getRowIndex(node) != null && !(node instanceof Label || node instanceof Pane));
         }
     }
 
