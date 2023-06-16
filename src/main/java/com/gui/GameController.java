@@ -47,20 +47,18 @@ public class GameController extends AController implements Initializable {
 
     private Boolean PlayerTurn = false; // false is player 0, True is player 1.
     private boolean playerDidMove = false;
-    public boolean moveMenuOpen = false;
-    public Shape fromButton;
+    private boolean moveMenuOpen = false;
+    private Shape fromButton;
 
-    public Shape[][] Board;
-    Stack<Shape[][]> stateStack = new Stack<>();
+    private Shape[][] Board;
+    private Stack<Shape[][]> stateStack = new Stack<>();
 
     private Player player0;
     private Player player1;
 
     public final int boardsize = 7;
-    public final Paint player0Color = Color.rgb(30, 144, 255);
-    public final Paint player1Color = Color.rgb(255, 0, 0);
-    public final Paint CloneRadius = Color.rgb(255, 255, 0);
-    public final Paint JumpRadius = Color.rgb(255, 165, 0);
+    private final Paint CloneRadius = Color.rgb(255, 255, 0);
+    private final Paint JumpRadius = Color.rgb(255, 165, 0);
 
     public GameController(){}
 
@@ -126,7 +124,7 @@ public class GameController extends AController implements Initializable {
 
     }
 
-    //TODO Once pointer madness is figured out, add support for custom icons <- Should be easy by loading them from the Player class
+    //TODO Once pointer madness is figured out, add support for custom icons <- Should be easy by loading them from the Player class <- No fuck you, do you know how annoying that is with replacing icons on the board instead of just using circles???
     private void setStartingPositions() {
         for (int horizontalIndex = Board.length - 2; horizontalIndex <= Board.length - 1; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex <= 1; verticalIndex++) {
@@ -214,27 +212,27 @@ public class GameController extends AController implements Initializable {
     }
     
 
-    private void activatePlayerButtons(Player player) {
-        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
-            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
-                Shape button = Board[verticalIndex][horizontalIndex];
-                if (button.getFill() == player.getPlayerColor()) {
-                    button.setOnMouseClicked(e -> openPlayerMovementMenu(button));
-                }
-            }
-        }
-    }
+    // private void activatePlayerButtons(Player player) {
+    //     for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+    //         for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+    //             Shape button = Board[verticalIndex][horizontalIndex];
+    //             if (button.getFill() == player.getPlayerColor()) {
+    //                 button.setOnMouseClicked(e -> openPlayerMovementMenu(button));
+    //             }
+    //         }
+    //     }
+    // }
 
-    private void deactivatePlayerButtons(Player player) {
-        for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
-            for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
-                Shape button = Board[verticalIndex][horizontalIndex];
-                if (button.getFill() == player.getPlayerColor()) {
-                    button.setOnMouseClicked(e -> System.out.println("Not your piece!"));
-                }
-            }
-        }
-    }
+    // private void deactivatePlayerButtons(Player player) {
+    //     for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
+    //         for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+    //             Shape button = Board[verticalIndex][horizontalIndex];
+    //             if (button.getFill() == player.getPlayerColor()) {
+    //                 button.setOnMouseClicked(e -> System.out.println("Not your piece!"));
+    //             }
+    //         }
+    //     }
+    // }
 
     private void openPlayerMovementMenu(Shape button) {
         Cord buttonCords = findButtonIndex(button);
@@ -458,7 +456,7 @@ public class GameController extends AController implements Initializable {
      * Hacky way to implement snapshots.<p>
      * Becouse the Shapes in the board are pointers to UI elements, copy them instead of referencing and push everything onto the stack.
      */
-    private void takeSnapshot() {
+    public void takeSnapshot() {
         Shape[][] storage = new Shape[boardsize][boardsize];
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
@@ -481,7 +479,7 @@ public class GameController extends AController implements Initializable {
      * Be extremely carefull with this. It barley functions as-is and javaFX is really temperamentfull when it comes to pointers.<p>
      * The snapshot logic is weird and annoying but things WILL break if you try changing them!
      */
-    private void loadSnapshot() {
+    public void loadSnapshot() {
         Shape[][] storage = null;
         try {
             storage = stateStack.pop().getData();

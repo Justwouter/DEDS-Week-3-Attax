@@ -67,6 +67,7 @@ public class NegamaxBot extends ARobot {
     }
 
     private boolean isTerminalNode() {
+        Shape[][] Board = controller.getBoard();
         ArrayList<Cord> cords = controller.findPlayerPieces(controller.getCurrentPlayer());
         int boardSize = controller.boardsize;
 
@@ -76,7 +77,7 @@ public class NegamaxBot extends ARobot {
                 for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
                         + 2; verticalIndex++) {
                     if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
-                        if (!controller.Board[verticalIndex][horizontalIndex].isVisible()) {
+                        if (!Board[verticalIndex][horizontalIndex].isVisible()) {
                             return false;
                         }
                     }
@@ -86,7 +87,7 @@ public class NegamaxBot extends ARobot {
 
         for (int horizontalIndex = 0; horizontalIndex < boardSize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardSize; verticalIndex++) {
-                var button = controller.Board[verticalIndex][horizontalIndex];
+                var button = Board[verticalIndex][horizontalIndex];
                 if (!(button.getFill() == controller.getCurrentPlayer().getPlayerColor())
                         || !(button.getFill() == controller.getOtherPlayer().getPlayerColor())) {
                     return false;

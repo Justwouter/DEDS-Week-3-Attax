@@ -53,13 +53,14 @@ public class AggressiveBot extends ARobot {
      * @return Arraylist of Cords with every possible move
      */
     private ArrayList<Cord> getTargets(Cord index) {
+        Shape[][] Board = controller.getBoard();
         ArrayList<Cord> possibleMoves = new ArrayList<>();
         for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
                 + 2; horizontalIndex++) {
             for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
                     + 2; verticalIndex++) {
                 if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
-                    if (!controller.Board[verticalIndex][horizontalIndex].isVisible()) {
+                    if (!Board[verticalIndex][horizontalIndex].isVisible()) {
                         possibleMoves.add(new Cord(verticalIndex, horizontalIndex));
                     }
                 }
@@ -74,12 +75,13 @@ public class AggressiveBot extends ARobot {
      * @return Amount of pieces captured with move.
      */
     private int evaluateMove(Cord index) {
+        Shape[][] Board = controller.getBoard();
         int counter = 0;
         for (int horizontalIndex = index.getHorizontal() - 1; horizontalIndex <= index.getHorizontal()
                 + 1; horizontalIndex++) {
             for (int verticalIndex = index.getVertical() - 1; verticalIndex <= index.getVertical()+ 1; verticalIndex++) {
                 if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
-                    Shape button = controller.Board[verticalIndex][horizontalIndex];
+                    Shape button = Board[verticalIndex][horizontalIndex];
                     if (button.getFill() == controller.getOtherPlayer().getPlayerColor() && button.isVisible()) {
                         counter++;
                     }

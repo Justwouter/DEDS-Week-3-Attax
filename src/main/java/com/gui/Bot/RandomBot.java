@@ -6,6 +6,7 @@ import java.util.Random;
 import com.gui.GameController;
 import com.shared.Cord;
 
+import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
 public class RandomBot extends ARobot {
@@ -27,6 +28,7 @@ public class RandomBot extends ARobot {
     }
 
     private Pair<Cord,Cord> getRandomTo(ArrayList<Cord> indexList) {
+        Shape[][] Board = controller.getBoard();
         ArrayList<Pair<Cord,Cord>> possibleMoves = new ArrayList<>();
         for(Cord index : indexList){
             for (int horizontalIndex = index.getHorizontal() - 2; horizontalIndex <= index.getHorizontal()
@@ -34,7 +36,7 @@ public class RandomBot extends ARobot {
                 for (int verticalIndex = index.getVertical() - 2; verticalIndex <= index.getVertical()
                         + 2; verticalIndex++) {
                     if (controller.isIndexWithinBounds(horizontalIndex) && controller.isIndexWithinBounds(verticalIndex)) {
-                        if (!controller.Board[verticalIndex][horizontalIndex].isVisible()) {
+                        if (!Board[verticalIndex][horizontalIndex].isVisible()) {
                             possibleMoves.add(new Pair<Cord,Cord>(index, new Cord(verticalIndex, horizontalIndex)));
                         }
                     }
