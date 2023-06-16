@@ -37,6 +37,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
+//TODO add onShutdown in Acontroller to better manage events when switching controllers e.g. stopping music
 public class GameController extends AController implements Initializable {
 
     @FXML
@@ -89,20 +90,26 @@ public class GameController extends AController implements Initializable {
         this.dataDict = dataDict;
         this.player0 = (Player) dataDict.get("Player0");
         this.player1 = (Player) dataDict.get("Player1");
+        this.musicPlayer = startMusic(Main.class.getResource("music/battle.mp3").getFile());
         GameBoard = colorBoard(GameBoard,boardsize);
         fillBoard();
         setStartingPositions();
         updateScoreboard();
         takeSnapshot();
         setupButtonTimeout();
-        startMusic();
     }
 
-    private void startMusic(){
-        File file = new File(Main.class.getResource("music/battle.mp3").getFile());
-        Media media = new Media(file.toURI().toString());  
-        this.musicPlayer = new MediaPlayer(media);  
-        this.musicPlayer.setAutoPlay(true);  
+    private MediaPlayer startMusic(String pathToMusic){
+        File file = new File(pathToMusic);
+        Media media = new Media(file.toURI().toString()); 
+        MediaPlayer musicPlayer = new MediaPlayer(media);
+        musicPlayer.setOnEndOfMedia(new Runnable() {
+            public void run() {
+                musicPlayer.seek(Duration.ZERO);
+            }
+        });
+        musicPlayer.setAutoPlay(true);
+        return musicPlayer;
     }
 
     private void fillBoard() {
@@ -385,7 +392,7 @@ public class GameController extends AController implements Initializable {
         //All spaces are full, win by points
         if (checkBoardFull()) {
             timer.stop();
-            musicPlayer.stop();
+            musicPlayer.dispose();
             Player player = getPlayerwithMostPoints();
             dataDict.put("VictoryText", player.getName() + " wins with " + player.getGamePoints() + " points!");
             Main.show("WinnerPage", this.dataDict);
@@ -395,7 +402,7 @@ public class GameController extends AController implements Initializable {
         // Enemy has no more moves left, win by knockout. Arguably the harder achievement
         } else if (!checkNextPlayerHasMoves()) {
             timer.stop();
-            musicPlayer.stop();
+            musicPlayer.dispose();
             Player player = getCurrentPlayer();
             dataDict.put("VictoryText",player.getName() + " wins by technical knockout!");
             Main.show("WinnerPage", dataDict);
@@ -669,6 +676,7 @@ public class GameController extends AController implements Initializable {
 
     //#region ===============Control button functionality==========================
     public void ResetGame() {
+        musicPlayer.dispose();
         Main.show("game",this.dataDict);
     }
     //#endregion
