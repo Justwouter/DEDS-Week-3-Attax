@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Ellipse?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.GameController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gui.GameController">
    <top>
       <AnchorPane BorderPane.alignment="TOP_CENTER">
          <children>
@@ -48,6 +48,7 @@
             </GridPane>
             <Button layoutX="14.0" layoutY="526.0" mnemonicParsing="false" onAction="#takeSnapshot" text="Take Snapshot" />
             <Button layoutX="14.0" layoutY="553.0" mnemonicParsing="false" onAction="#loadSnapshot" text="Load Snapshot" />
+            <Button layoutX="1077.0" layoutY="526.0" mnemonicParsing="false" onAction="#QuitGame" text="Quit Game" />
          </children>
       </AnchorPane>
    </top>
@@ -59,6 +60,6 @@
       </Button>
    </bottom>
    <center>
-      <Button fx:id="UndoButton" disable="${timeline.running}" mnemonicParsing="false" onAction="#handleUndoButton" text="Undo" BorderPane.alignment="CENTER" />
+      <Button fx:id="UndoButton" disable="true" mnemonicParsing="false" onAction="#handleUndoButton" text="Undo" visible="false" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

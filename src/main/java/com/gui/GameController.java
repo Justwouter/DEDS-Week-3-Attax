@@ -707,5 +707,10 @@ public class GameController extends AController implements Initializable {
         musicPlayer.dispose();
         Main.show("game",this.dataDict);
     }
+
+    public void QuitGame() {
+        musicPlayer.dispose();
+        Main.show("homepage",this.dataDict);
+    }
     //#endregion
 }
