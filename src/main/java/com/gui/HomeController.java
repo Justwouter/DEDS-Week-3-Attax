@@ -16,6 +16,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -67,6 +68,7 @@ public class HomeController extends AController implements Initializable {
     public void initialize(URL arg0, ResourceBundle arg1) {
         setupHandlers();
         BoardSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 16,7,1));
+        BoardSize.setTooltip(new Tooltip("Game board size"));
     }
 
     private void setupHandlers() {

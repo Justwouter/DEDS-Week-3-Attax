@@ -1,6 +1,6 @@
 package com.gui;
 
-import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 import javafx.fxml.FXML;
@@ -38,12 +38,11 @@ public class WinnerController extends AController{
         Label winLabel = new Label((String) dataDict.get("VictoryText"));
         MainPane.setTop(winLabel);
         BorderPane.setAlignment(winLabel, Pos.CENTER);
-        this.musicPlayer = startMusic(Main.class.getResource("music/YAY.mp3").getFile());
+        this.musicPlayer = startMusic(Main.class.getResource("music/YAY.mp3"));
     }
 
-    private MediaPlayer startMusic(String pathToMusic){
-        File file = new File(pathToMusic);
-        Media media = new Media(file.toURI().toString()); 
+    private MediaPlayer startMusic(URL pathToMusic){
+        Media media = new Media(pathToMusic.toString()); 
         MediaPlayer musicPlayer = new MediaPlayer(media);
         musicPlayer.setAutoPlay(true);
         return musicPlayer;

@@ -1,6 +1,5 @@
 package com.gui;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -94,7 +93,7 @@ public class GameController extends AController implements Initializable {
         this.boardsize = (int) dataDict.get("BoardSize");
         this.player0 = (Player) dataDict.get("Player0");
         this.player1 = (Player) dataDict.get("Player1");
-        this.musicPlayer = startMusic(Main.class.getResource("music/battle.mp3").getFile());
+        this.musicPlayer = startMusic(Main.class.getResource("music/battle.mp3"));
         GameBoard = makeBoard(GameBoard, "");
         GameBoard = colorBoard(GameBoard,boardsize);
         fillBoard();
@@ -104,9 +103,8 @@ public class GameController extends AController implements Initializable {
         setupButtonTimeout();
     }
 
-    private MediaPlayer startMusic(String pathToMusic){
-        File file = new File(pathToMusic);
-        Media media = new Media(file.toURI().toString()); 
+    private MediaPlayer startMusic(URL pathToMusic){
+        Media media = new Media(pathToMusic.toString()); 
         MediaPlayer musicPlayer = new MediaPlayer(media);
         musicPlayer.setOnEndOfMedia(new Runnable() {
             public void run() {
@@ -181,6 +179,7 @@ public class GameController extends AController implements Initializable {
     private GridPane colorBoard(GridPane gp, int boardsize){
         for (int horizontalIndex = 0; horizontalIndex < boardsize; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex < boardsize; verticalIndex++) {
+                //Add a pane object to each cell and color it in alternating white and slategray
                 Pane backgroundPane = new Pane();
                 if((horizontalIndex + verticalIndex) % 2 == 0){
                     backgroundPane.setBackground(new Background(new BackgroundFill(Color.rgb(70, 80, 90), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -190,7 +189,7 @@ public class GameController extends AController implements Initializable {
         }
         return gp;
     }
-    //TODO Once pointer madness is figured out, add support for custom icons <- Should be easy by loading them from the Player class <- No fuck you, do you know how annoying that is with replacing icons on the board instead of just using circles???
+    //TODO Once pointer madness is figured out, add support for custom icons <- Should be easy by loading them from the Player class <- No fuck you, do you know how annoying that is with replacing icons on the board instead of just using circles??? <- well not very much if you wrote the code to work with it in the first place!
     private void setStartingPositions() {
         for (int horizontalIndex = Board.length - 2; horizontalIndex <= Board.length - 1; horizontalIndex++) {
             for (int verticalIndex = 0; verticalIndex <= 1; verticalIndex++) {
